@@ -1,18 +1,59 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231E3E62'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="JurisAcompanha — Plataforma de acompanhamento processual jurídico com isolamento multi-tenant estrito, portal do advogado e portal do cliente em linguagem simplificada." />
-    <title>JurisAcompanha — Acompanhamento Processual Seguro</title>
-    <!-- Google Fonts: Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  </head>
-  <body class="bg-slate-50 text-slate-900 font-sans antialiased selection:bg-juridico-primary selection:text-white min-h-screen">
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231E3E62'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="JurisAcompanha — Plataforma de acompanhamento processual jurídico com isolamento multi-tenant estrito, portal do advogado e portal do cliente em linguagem simplificada." />
+  <title>JurisAcompanha — Acompanhamento Processual Seguro</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+</head>
+
+<body
+  class="bg-slate-50 text-slate-900 font-sans antialiased selection:bg-juridico-primary selection:text-white min-h-screen">
+  <div id="root"></div>
+  <script>
+    // Auxiliar de inicialização: caso o index.html seja aberto diretamente via file:// (duplo-clique no Windows Explorer)
+    if (window.location.protocol === 'file:') {
+      document.addEventListener('DOMContentLoaded', function () {
+        var root = document.getElementById('root');
+        if (root && (!root.hasChildNodes() || root.children.length === 0)) {
+          root.innerHTML = `
+              <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0f172a,#1e3e62,#020617);font-family:Inter,system-ui,sans-serif;color:#f8fafc;padding:24px;box-sizing:border-box;">
+                <div style="max-width:540px;width:100%;background:#ffffff;color:#0f172a;border-radius:20px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.45);padding:36px;text-align:center;">
+                  <div style="width:64px;height:64px;margin:0 auto 16px;border-radius:16px;background:linear-gradient(135deg,#1e3e62,#2563eb);display:flex;align-items:center;justify-content:center;color:#fff;">
+                    <svg style="width:36px;height:36px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                  </div>
+                  <h1 style="font-size:24px;font-weight:800;margin:0 0 8px;color:#0f172a;letter-spacing:-0.5px;">JurisAcompanha</h1>
+                  <p style="font-size:13px;color:#64748b;margin:0 0 20px;line-height:1.5;">
+                    Plataforma de Acompanhamento Processual Jurídico Multi-Tenant
+                  </p>
+                  <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px;text-align:left;font-size:13px;line-height:1.6;color:#334155;margin-bottom:20px;">
+                    <strong style="display:block;color:#0f172a;margin-bottom:6px;">⚡ Como iniciar o sistema:</strong>
+                    1. Execute o inicializador <strong><code>iniciar_sistema.bat</code></strong> nesta pasta;<br/>
+                    <em>ou</em> execute no terminal: <code style="background:#e2e8f0;padding:2px 6px;border-radius:4px;">npm run dev</code>.<br/>
+                    2. O sistema abrirá automaticamente na tela de login inicial.
+                  </div>
+                  <a href="https://mikaelmacedo0.github.io/MDR_ADVOCACIA/" style="display:inline-block;width:100%;background:#1e3e62;color:#ffffff;text-decoration:none;font-weight:700;font-size:14px;padding:13px 20px;border-radius:10px;box-sizing:border-box;transition:all 0.2s;">
+                    Abrir JurisAcompanha no Servidor Local (http://https://mikaelmacedo0.github.io/MDR_ADVOCACIA/) &rarr;
+                  </a>
+                </div>
+              </div>
+            `;
+        }
+      });
+    }
+  </script>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>

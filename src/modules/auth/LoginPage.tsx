@@ -357,6 +357,27 @@ export const LoginPage: React.FC = () => {
                       Primeiro acesso? Crie seu cadastro personalizado aqui
                     </button>
                   </div>
+
+                  {/* Acesso Rápido de Demonstração para Cliente */}
+                  <div className="pt-4 border-t border-slate-100 space-y-2">
+                    <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                      Conta de Demonstração Rápida (1-Clique):
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setClientEmail('mariana.oliveira@gmail.com');
+                        loginClientWithEmail('mariana.oliveira@gmail.com');
+                      }}
+                      className="w-full p-2.5 bg-emerald-50 hover:bg-emerald-100/70 border border-emerald-200 rounded-lg text-left transition-colors flex items-center justify-between"
+                    >
+                      <div>
+                        <span className="font-bold text-slate-900 block text-xs">Mariana Oliveira da Costa</span>
+                        <span className="text-[11px] text-emerald-700">Cliente Multi-Escritório (Silva & Assoc. e Rocha & Mendes)</span>
+                      </div>
+                      <ArrowRight className="h-4 w-4 text-emerald-600 shrink-0 ml-2" />
+                    </button>
+                  </div>
                 </form>
               ) : (
                 /* Formulário de Criação de Novo Usuário Personalizado */

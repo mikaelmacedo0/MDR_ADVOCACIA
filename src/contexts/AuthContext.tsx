@@ -117,8 +117,32 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
-  const [currentPersona, setCurrentPersona] = useState<PersonaProfile>(PRESET_PERSONAS[0]);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    try {
+      if (typeof window !== 'undefined' && window.sessionStorage) {
+        return sessionStorage.getItem('juris_authenticated') === 'true';
+      }
+    } catch {
+      // Fallback padrão: inicia não autenticado para abrir a tela de login
+    }
+    return false;
+  });
+
+  const [currentPersona, setCurrentPersona] = useState<PersonaProfile>(() => {
+    try {
+      if (typeof window !== 'undefined' && window.sessionStorage) {
+        const savedId = sessionStorage.getItem('juris_current_persona_id');
+        if (savedId) {
+          const found = PRESET_PERSONAS.find((p) => p.id === savedId);
+          if (found) return found;
+        }
+      }
+    } catch {
+      // Fallback
+    }
+    return PRESET_PERSONAS[0];
+  });
+
   const [activeTenantId, setActiveTenantId] = useState<string>(
     't-silva-1111-1111-1111-111111111111'
   );
@@ -147,6 +171,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
     setCurrentPersona(selected);
     setIsAuthenticated(true);
+    try {
+      sessionStorage.setItem('juris_authenticated', 'true');
+      sessionStorage.setItem('juris_current_persona_id', selected.id);
+    } catch {
+      // ignore
+    }
   };
 
   const switchTenant = (tenantId: string) => {
@@ -169,6 +199,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setCurrentPersona(found);
       if (found.tenantId) setActiveTenantId(found.tenantId);
       setIsAuthenticated(true);
+      try {
+        sessionStorage.setItem('juris_authenticated', 'true');
+        sessionStorage.setItem('juris_current_persona_id', found.id);
+      } catch {
+        // ignore
+      }
       return { success: true };
     }
 
@@ -176,6 +212,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (cleanEmail.includes('admin') || cleanEmail.includes('carlos')) {
       setCurrentPersona(PRESET_PERSONAS[0]);
       setIsAuthenticated(true);
+      try {
+        sessionStorage.setItem('juris_authenticated', 'true');
+        sessionStorage.setItem('juris_current_persona_id', PRESET_PERSONAS[0].id);
+      } catch {
+        // ignore
+      }
       return { success: true };
     }
 
@@ -209,6 +251,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     setCurrentPersona(clientPersona);
     setIsAuthenticated(true);
+    try {
+      sessionStorage.setItem('juris_authenticated', 'true');
+      sessionStorage.setItem('juris_current_persona_id', clientPersona.id);
+    } catch {
+      // ignore
+    }
   };
 
   const loginClientWithEmail = (email: string, _password?: string) => {
@@ -216,6 +264,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (cleanEmail.includes('mariana') || cleanEmail.includes('oliveira') || cleanEmail.includes('gmail')) {
       setCurrentPersona(PRESET_PERSONAS[4]);
       setIsAuthenticated(true);
+      try {
+        sessionStorage.setItem('juris_authenticated', 'true');
+        sessionStorage.setItem('juris_current_persona_id', PRESET_PERSONAS[4].id);
+      } catch {
+        // ignore
+      }
       return { success: true };
     }
 
@@ -252,11 +306,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     setCurrentPersona(newPersona);
     setIsAuthenticated(true);
+    try {
+      sessionStorage.setItem('juris_authenticated', 'true');
+      sessionStorage.setItem('juris_current_persona_id', newPersona.id);
+    } catch {
+      // ignore
+    }
     return { success: true };
   };
 
   const logout = () => {
     setIsAuthenticated(false);
+    try {
+      sessionStorage.removeItem('juris_authenticated');
+      sessionStorage.removeItem('juris_current_persona_id');
+    } catch {
+      // ignore
+    }
   };
 
   return (
