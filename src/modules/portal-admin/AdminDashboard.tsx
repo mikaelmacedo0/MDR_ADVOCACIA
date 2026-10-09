@@ -4,6 +4,14 @@ import { dataService } from '../../services/dataService';
 import { formatDate, formatDateTime, formatFileSize } from '../../utils/formatters';
 import { NewCaseModal } from '../../components/NewCaseModal';
 import { NewEventModal } from '../../components/NewEventModal';
+import { UserManagementView } from './UserManagementView';
+import {
+  TRADUCAO_STATUS_PROCESSO,
+  TRADUCAO_STATUS_CLIENTE,
+  TRADUCAO_VISIBILIDADE,
+  TRADUCAO_SCAN_STATUS,
+  TRADUCAO_PAPEL_STAFF,
+} from '../../types/database';
 import {
   Briefcase,
   Users,
@@ -14,23 +22,26 @@ import {
   EyeOff,
   Building2,
   Lock,
+  Shield,
 } from 'lucide-react';
 
 export const AdminDashboard: React.FC = () => {
   const { currentUser, activeTenant } = useAuth();
 
-  const [activeTab, setActiveTab] = useState<'cases' | 'clients' | 'timeline' | 'documents'>('cases');
+  const [activeTab, setActiveTab] = useState<'cases' | 'clients' | 'timeline' | 'documents' | 'users'>('cases');
   const [searchTerm, setSearchTerm] = useState('');
   const [isNewCaseOpen, setIsNewCaseOpen] = useState(false);
   const [isNewEventOpen, setIsNewEventOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
   const role = currentUser.membership?.role;
-  const canCreateCase = role === 'office_admin' || role === 'lawyer';
+  const isOfficeAdmin = role === 'office_admin';
+  const canCreateCase = isOfficeAdmin || role === 'lawyer';
 
-  // Carrega dados da camada de serviço (com isolamento do tenant ativo)
+  // Carrega dados da camada de serviço com isolamento do tenant ativo
   const cases = dataService.getCases(currentUser, activeTenant.id);
   const clients = dataService.getClients(currentUser, activeTenant.id);
+  const tenantUsers = isOfficeAdmin ? dataService.getTenantUsers(currentUser, activeTenant.id) : [];
 
   // Coleta todos os eventos de todos os processos do tenant para a aba Timeline Geral
   const allEvents = cases.flatMap((c) => dataService.getCaseEvents(currentUser, activeTenant.id, c.id));
@@ -67,7 +78,9 @@ export const AdminDashboard: React.FC = () => {
           <h1 className="text-2xl font-extrabold text-slate-900 mt-1">{activeTenant.name}</h1>
           <p className="text-xs text-slate-500 mt-1">
             Operando como: <strong className="text-slate-800">{currentUser.display_name}</strong> • Papel:{' '}
-            <span className="font-semibold text-blue-700">{role}</span>
+            <span className="font-semibold text-blue-700">
+              {role ? TRADUCAO_PAPEL_STAFF[role] : 'Colaborador'}
+            </span>
           </p>
         </div>
 
@@ -95,7 +108,7 @@ export const AdminDashboard: React.FC = () => {
               className="flex items-center space-x-1.5 px-3 py-2 bg-slate-100 text-slate-400 rounded-lg text-xs font-medium cursor-not-allowed border border-slate-200"
             >
               <Lock className="h-3.5 w-3.5 text-slate-400" />
-              <span>Novo Processo (Restrito)</span>
+              <span>Novo Processo (Acesso Restrito)</span>
             </div>
           )}
         </div>
@@ -145,7 +158,7 @@ export const AdminDashboard: React.FC = () => {
       </div>
 
       {/* Navegação por Abas */}
-      <div className="border-b border-slate-200 flex space-x-6">
+      <div className="border-b border-slate-200 flex flex-wrap gap-2 sm:gap-6">
         <button
           onClick={() => setActiveTab('cases')}
           className={`pb-3 text-sm font-semibold border-b-2 transition-all flex items-center space-x-2 ${
@@ -193,19 +206,33 @@ export const AdminDashboard: React.FC = () => {
           <FileText className="h-4 w-4" />
           <span>Documentos ({allDocuments.length})</span>
         </button>
+
+        {/* Aba Exclusiva de Gestão de Usuários (Administrador) */}
+        {isOfficeAdmin && (
+          <button
+            onClick={() => setActiveTab('users')}
+            className={`pb-3 text-sm font-semibold border-b-2 transition-all flex items-center space-x-2 ${
+              activeTab === 'users'
+                ? 'border-purple-700 text-purple-700 font-bold'
+                : 'border-transparent text-purple-800/80 hover:text-purple-900'
+            }`}
+          >
+            <Shield className="h-4 w-4 text-purple-600" />
+            <span>Gestão de Usuários & Permissões ({tenantUsers.length})</span>
+          </button>
+        )}
       </div>
 
       {/* Conteúdo das Abas */}
       {activeTab === 'cases' && (
         <div className="space-y-4">
-          {/* Barra de Pesquisa */}
           <div className="flex items-center justify-between">
             <input
               type="text"
               placeholder="Buscar processo por título, CNJ ou assunto..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="px-4 py-2 border border-slate-300 rounded-lg text-sm w-full max-w-md focus:ring-2 focus:ring-juridico-primary outline-none"
+              className="px-4 py-2 border border-slate-300 rounded-lg text-sm w-full max-w-md focus:ring-2 focus:ring-juridico-primary outline-none bg-white"
             />
           </div>
 
@@ -262,6 +289,9 @@ export const AdminDashboard: React.FC = () => {
                         <FileText className="h-3.5 w-3.5 text-slate-400" />
                         <span>{caseDocs.length} documentos</span>
                       </span>
+                      <span className="px-2 py-0.5 rounded bg-slate-100 font-semibold text-[11px] text-slate-700">
+                        {TRADUCAO_STATUS_PROCESSO[c.status]}
+                      </span>
                     </div>
                   </div>
                 );
@@ -274,7 +304,7 @@ export const AdminDashboard: React.FC = () => {
       {activeTab === 'clients' && (
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
           <table className="min-w-full divide-y divide-slate-200 text-xs">
-            <thead className="bg-slate-50 text-slate-600 font-semibold">
+            <thead className="bg-slate-50 text-slate-600 font-semibold uppercase tracking-wider">
               <tr>
                 <th className="px-4 py-3 text-left">Nome Completo</th>
                 <th className="px-4 py-3 text-left">E-mail</th>
@@ -291,7 +321,7 @@ export const AdminDashboard: React.FC = () => {
                   <td className="px-4 py-3 text-slate-600">{cl.phone || '-'}</td>
                   <td className="px-4 py-3">
                     <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 uppercase">
-                      {cl.status}
+                      {TRADUCAO_STATUS_CLIENTE[cl.status]}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-slate-400">{formatDate(cl.created_at)}</td>
@@ -326,7 +356,7 @@ export const AdminDashboard: React.FC = () => {
                     ) : (
                       <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">
                         <EyeOff className="w-3 h-3 mr-1" />
-                        Apenas Interno
+                        Apenas Interno (Confidencial)
                       </span>
                     )}
                     <span className="text-slate-400">{formatDateTime(ev.event_at)}</span>
@@ -338,7 +368,7 @@ export const AdminDashboard: React.FC = () => {
                 {ev.plain_explanation && (
                   <div className="p-2.5 bg-blue-50/80 border border-blue-200 rounded text-blue-900 font-medium">
                     <span className="text-[10px] font-bold uppercase tracking-wider block text-blue-700 mb-0.5">
-                      Explicação enviada ao cliente:
+                      Explicação enviada ao cliente em linguagem simples:
                     </span>
                     {ev.plain_explanation}
                   </div>
@@ -352,13 +382,13 @@ export const AdminDashboard: React.FC = () => {
       {activeTab === 'documents' && (
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
           <table className="min-w-full divide-y divide-slate-200 text-xs">
-            <thead className="bg-slate-50 text-slate-600 font-semibold">
+            <thead className="bg-slate-50 text-slate-600 font-semibold uppercase tracking-wider">
               <tr>
                 <th className="px-4 py-3 text-left">Arquivo</th>
                 <th className="px-4 py-3 text-left">Tamanho</th>
                 <th className="px-4 py-3 text-left">Visibilidade</th>
-                <th className="px-4 py-3 text-left">Status Scan</th>
-                <th className="px-4 py-3 text-left">Data</th>
+                <th className="px-4 py-3 text-left">Status de Verificação</th>
+                <th className="px-4 py-3 text-left">Data de Juntada</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 bg-white">
@@ -377,12 +407,18 @@ export const AdminDashboard: React.FC = () => {
                           : 'bg-amber-100 text-amber-800'
                       }`}
                     >
-                      {doc.visibility === 'client' ? 'Visível ao Cliente' : 'Apenas Interno'}
+                      {TRADUCAO_VISIBILIDADE[doc.visibility]}
                     </span>
                   </td>
                   <td className="px-4 py-3">
-                    <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800 uppercase">
-                      {doc.scan_status}
+                    <span
+                      className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold ${
+                        doc.scan_status === 'clean'
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : 'bg-amber-100 text-amber-800'
+                      }`}
+                    >
+                      {TRADUCAO_SCAN_STATUS[doc.scan_status]}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-slate-400">{formatDate(doc.created_at)}</td>
@@ -392,6 +428,9 @@ export const AdminDashboard: React.FC = () => {
           </table>
         </div>
       )}
+
+      {/* Aba de Gestão de Usuários do Administrador */}
+      {activeTab === 'users' && isOfficeAdmin && <UserManagementView />}
 
       {/* Modais */}
       <NewCaseModal

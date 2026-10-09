@@ -117,6 +117,70 @@ export interface AuditLog {
   created_at: string;
 }
 
+// Entidade de Usuário para Gestão Administrativa
+export interface ManagedUser {
+  id: string;
+  user_id: string;
+  tenant_id: string;
+  display_name: string;
+  email: string;
+  role: StaffRole;
+  status: MembershipStatus;
+  created_at: string;
+  last_login?: string;
+}
+
+export interface CreateUserPayload {
+  display_name: string;
+  email: string;
+  password?: string;
+  role: StaffRole;
+}
+
+export interface UpdateUserPayload {
+  display_name: string;
+  email: string;
+  role: StaffRole;
+  status: MembershipStatus;
+}
+
+// Dicionários de Tradução Oficial para Português (Brasil)
+export const TRADUCAO_STATUS_PROCESSO: Record<CaseStatus, string> = {
+  active: 'Em Andamento',
+  suspended: 'Suspenso',
+  archived: 'Arquivado',
+  concluded: 'Concluído / Julgado',
+};
+
+export const TRADUCAO_PAPEL_STAFF: Record<StaffRole, string> = {
+  office_admin: 'Administrador do Escritório',
+  lawyer: 'Advogado(a)',
+  collaborator: 'Assistente / Colaborador',
+};
+
+export const TRADUCAO_STATUS_MEMBRO: Record<MembershipStatus, string> = {
+  active: 'Ativo',
+  invited: 'Convite Pendente',
+  suspended: 'Suspenso',
+};
+
+export const TRADUCAO_STATUS_CLIENTE: Record<ClientStatus, string> = {
+  active: 'Ativo',
+  inactive: 'Inativo',
+};
+
+export const TRADUCAO_VISIBILIDADE: Record<VisibilityType, string> = {
+  internal: 'Apenas Interno (Confidencial)',
+  client: 'Visível ao Cliente',
+};
+
+export const TRADUCAO_SCAN_STATUS: Record<ScanStatus, string> = {
+  clean: 'Seguro / Aprovado',
+  pending: 'Em Verificação',
+  quarantined: 'Em Quarentena',
+  rejected: 'Rejeitado / Risco Detectado',
+};
+
 // Perfil de contexto ativo na aplicação
 export type UserType = 'staff' | 'client';
 

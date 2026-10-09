@@ -19,7 +19,18 @@ import {
   MOCK_DOCUMENTS,
   MOCK_CLIENTS,
   MOCK_AUDIT_LOGS,
+  MOCK_MEMBERSHIPS,
+  MOCK_PROFILES,
+  MOCK_CLIENT_USER_LINKS,
 } from './mockData';
+import {
+  ManagedUser,
+  CreateUserPayload,
+  UpdateUserPayload,
+  Membership,
+  Profile,
+  ClientUserLink,
+} from '../types/database';
 
 class JurisDataService {
   private cases: Case[] = [...MOCK_CASES];
@@ -27,6 +38,9 @@ class JurisDataService {
   private documents: Document[] = [...MOCK_DOCUMENTS];
   private clients: Client[] = [...MOCK_CLIENTS];
   private auditLogs: AuditLog[] = [...MOCK_AUDIT_LOGS];
+  private memberships: Membership[] = [...MOCK_MEMBERSHIPS];
+  private profiles: Profile[] = [...MOCK_PROFILES];
+  private clientUserLinks: ClientUserLink[] = [...MOCK_CLIENT_USER_LINKS];
 
   // ==========================================
   // Helper de Auditoria
@@ -243,6 +257,241 @@ class JurisDataService {
       return [];
     }
     return this.auditLogs.filter((a) => a.tenant_id === activeTenantId);
+  }
+
+  // ==========================================
+  // Gestão de Usuários (Administrador do Escritório)
+  // ==========================================
+  public getTenantUsers(user: ActiveUserContext, activeTenantId: string): ManagedUser[] {
+    // Apenas Administradores do Escritório podem gerenciar usuários
+    if (user.user_type !== 'staff' || user.membership?.tenant_id !== activeTenantId) {
+      return [];
+    }
+
+    const tenantMemberships = this.memberships.filter((m) => m.tenant_id === activeTenantId);
+    return tenantMemberships.map((m) => {
+      const prof = this.profiles.find((p) => p.user_id === m.user_id);
+      return {
+        id: m.id,
+        user_id: m.user_id,
+        tenant_id: m.tenant_id,
+        display_name: prof?.display_name || 'Usuário Sem Nome',
+        email: prof ? `${m.user_id.replace('u-', '')}@${MOCK_TENANTS.find((t) => t.id === activeTenantId)?.slug}.com.br` : 'usuario@escritorio.adv.br',
+        role: m.role,
+        status: m.status,
+        created_at: m.created_at,
+        last_login: 'Hoje às 14:10',
+      };
+    });
+  }
+
+  public createTenantUser(
+    adminUser: ActiveUserContext,
+    activeTenantId: string,
+    payload: CreateUserPayload
+  ): { success: boolean; data?: ManagedUser; error?: string } {
+    if (adminUser.user_type !== 'staff' || adminUser.membership?.role !== 'office_admin') {
+      this.logAudit(activeTenantId, adminUser.user_id, 'USER_CREATE_ATTEMPT', 'membership', null, 'denied', {
+        reason: 'Apenas Administradores do Escritório podem criar novos usuários.',
+      });
+      return { success: false, error: 'Apenas Administradores têm permissão para criar usuários.' };
+    }
+
+    if (!payload.display_name.trim() || !payload.email.trim()) {
+      return { success: false, error: 'Nome e e-mail são obrigatórios.' };
+    }
+
+    const newUserId = `u-${Date.now()}`;
+    const newMembershipId = `m-${Date.now()}`;
+
+    const newProfile: Profile = {
+      user_id: newUserId,
+      display_name: payload.display_name.trim(),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+
+    const newMembership: Membership = {
+      id: newMembershipId,
+      tenant_id: activeTenantId,
+      user_id: newUserId,
+      role: payload.role,
+      status: 'active',
+      created_at: new Date().toISOString(),
+    };
+
+    this.profiles.push(newProfile);
+    this.memberships.push(newMembership);
+
+    this.logAudit(activeTenantId, adminUser.user_id, 'USER_CREATED', 'membership', newMembershipId, 'success', {
+      email: payload.email,
+      role: payload.role,
+    });
+
+    const createdUser: ManagedUser = {
+      id: newMembershipId,
+      user_id: newUserId,
+      tenant_id: activeTenantId,
+      display_name: newProfile.display_name,
+      email: payload.email.trim(),
+      role: newMembership.role,
+      status: newMembership.status,
+      created_at: newMembership.created_at,
+      last_login: 'Recém criado',
+    };
+
+    return { success: true, data: createdUser };
+  }
+
+  public updateTenantUser(
+    adminUser: ActiveUserContext,
+    activeTenantId: string,
+    membershipId: string,
+    payload: UpdateUserPayload
+  ): { success: boolean; error?: string } {
+    if (adminUser.user_type !== 'staff' || adminUser.membership?.role !== 'office_admin') {
+      return { success: false, error: 'Apenas Administradores podem alterar usuários e permissões.' };
+    }
+
+    const membership = this.memberships.find((m) => m.id === membershipId && m.tenant_id === activeTenantId);
+    if (!membership) {
+      return { success: false, error: 'Usuário não encontrado neste escritório.' };
+    }
+
+    // Atualiza permissão/papel e status
+    membership.role = payload.role;
+    membership.status = payload.status;
+
+    // Atualiza perfil
+    const prof = this.profiles.find((p) => p.user_id === membership.user_id);
+    if (prof) {
+      prof.display_name = payload.display_name.trim();
+      prof.updated_at = new Date().toISOString();
+    }
+
+    this.logAudit(activeTenantId, adminUser.user_id, 'USER_UPDATED', 'membership', membershipId, 'success', {
+      new_role: payload.role,
+      new_status: payload.status,
+    });
+
+    return { success: true };
+  }
+
+  public changeUserPassword(
+    adminUser: ActiveUserContext,
+    activeTenantId: string,
+    targetUserId: string,
+    newPassword?: string
+  ): { success: boolean; error?: string } {
+    if (adminUser.user_type !== 'staff' || adminUser.membership?.role !== 'office_admin') {
+      return { success: false, error: 'Apenas Administradores podem redefinir senhas.' };
+    }
+
+    if (!newPassword || newPassword.length < 6) {
+      return { success: false, error: 'A senha deve possuir no mínimo 6 caracteres.' };
+    }
+
+    this.logAudit(activeTenantId, adminUser.user_id, 'PASSWORD_RESET', 'auth.users', targetUserId, 'success', {
+      changed_by_admin: adminUser.user_id,
+    });
+
+    return { success: true };
+  }
+
+  public deleteTenantUser(
+    adminUser: ActiveUserContext,
+    activeTenantId: string,
+    membershipId: string
+  ): { success: boolean; error?: string } {
+    if (adminUser.user_type !== 'staff' || adminUser.membership?.role !== 'office_admin') {
+      return { success: false, error: 'Apenas Administradores podem excluir usuários.' };
+    }
+
+    const membership = this.memberships.find((m) => m.id === membershipId && m.tenant_id === activeTenantId);
+    if (!membership) {
+      return { success: false, error: 'Usuário não encontrado.' };
+    }
+
+    // Regra de segurança: Não permitir autoexclusão do próprio administrador logado
+    if (membership.user_id === adminUser.user_id) {
+      return { success: false, error: 'Ação bloqueada: você não pode excluir a sua própria conta de administrador.' };
+    }
+
+    this.memberships = this.memberships.filter((m) => m.id !== membershipId);
+    this.logAudit(activeTenantId, adminUser.user_id, 'USER_DELETED', 'membership', membershipId, 'success', {
+      deleted_user_id: membership.user_id,
+      deleted_role: membership.role,
+    });
+
+    return { success: true };
+  }
+
+  // ==========================================
+  // Cadastro e Autenticação de Clientes
+  // ==========================================
+  public registerClient(
+    activeTenantId: string,
+    payload: {
+      full_name: string;
+      email: string;
+      phone?: string;
+      authProvider: 'google' | 'custom';
+    }
+  ): { success: boolean; userContext?: ActiveUserContext; error?: string } {
+    if (!payload.full_name.trim() || !payload.email.trim()) {
+      return { success: false, error: 'Nome e e-mail são obrigatórios para cadastro.' };
+    }
+
+    const newUserId = `u-client-${Date.now()}`;
+    const newClientId = `c-client-${Date.now()}`;
+
+    // Cria registro de cliente no escritório
+    const newClient: Client = {
+      id: newClientId,
+      tenant_id: activeTenantId,
+      full_name: payload.full_name.trim(),
+      email: payload.email.trim(),
+      phone: payload.phone?.trim() || null,
+      status: 'active',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+    this.clients.push(newClient);
+
+    // Cria profile
+    const newProfile: Profile = {
+      user_id: newUserId,
+      display_name: newClient.full_name,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+    this.profiles.push(newProfile);
+
+    // Cria vínculo client_user_link
+    const newLink: ClientUserLink = {
+      id: `cul-${Date.now()}`,
+      tenant_id: activeTenantId,
+      client_id: newClientId,
+      user_id: newUserId,
+      created_at: new Date().toISOString(),
+    };
+    this.clientUserLinks.push(newLink);
+
+    this.logAudit(activeTenantId, newUserId, 'CLIENT_ACCOUNT_REGISTERED', 'client_user_links', newLink.id, 'success', {
+      auth_provider: payload.authProvider,
+      email: payload.email,
+    });
+
+    const userContext: ActiveUserContext = {
+      user_id: newUserId,
+      display_name: newClient.full_name,
+      email: newClient.email || payload.email,
+      user_type: 'client',
+      client_id: newClientId,
+      linked_tenants: [activeTenantId],
+    };
+
+    return { success: true, userContext };
   }
 }
 

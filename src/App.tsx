@@ -3,12 +3,18 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { Header } from './components/Header';
 import { AdminDashboard } from './modules/portal-admin/AdminDashboard';
 import { ClientPortal } from './modules/portal-client/ClientPortal';
+import { LoginPage } from './modules/auth/LoginPage';
 import { SecurityInspectorModal } from './components/SecurityInspectorModal';
 import { ShieldCheck, Lock, ExternalLink } from 'lucide-react';
 
 const AppContent: React.FC = () => {
-  const { currentUser } = useAuth();
+  const { isAuthenticated, currentUser } = useAuth();
   const [isSecurityInspectorOpen, setIsSecurityInspectorOpen] = useState(false);
+
+  // Se não estiver autenticado, exibe a tela de login unificada
+  if (!isAuthenticated) {
+    return <LoginPage />;
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900">
