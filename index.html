@@ -1,224 +1,186 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>JurisFlow</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
---bg:#f4f6f9;--card:#fff;--tx:#14284b;--mut:#64708a;--bd:#dde3ed;--pri:#14284b;--pt:#fff;--ok:#1f7a4d;--okb:#dff3e8;--wn:#9a6700;--wnb:#fff1cc;--rd:#b42318;--rdb:#fde4e1;--bl:#1d4f91;--blb:#e1ecfa}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1526;--card:#15213a;--tx:#e8edf7;--mut:#93a0ba;--bd:#26365a;--pri:#6c9bf0;--pt:#0d1526;--okb:#12382a;--ok:#6fd1a0;--wnb:#3b2f0d;--wn:#f0c866;--rdb:#41181a;--rd:#ff9b93;--blb:#16315a;--bl:#9cc0f5}}
-:root[data-theme="dark"]{--bg:#0d1526;--card:#15213a;--tx:#e8edf7;--mut:#93a0ba;--bd:#26365a;--pri:#6c9bf0;--pt:#0d1526;--okb:#12382a;--ok:#6fd1a0;--wnb:#3b2f0d;--wn:#f0c866;--rdb:#41181a;--rd:#ff9b93;--blb:#16315a;--bl:#9cc0f5}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
-button,input,select,textarea{font:inherit;color:inherit}
-:focus-visible{outline:2px solid var(--pri);outline-offset:2px}
-.wrap{max-width:960px;margin:0 auto;padding:16px}
-.login{max-width:440px;margin:6vh auto 0}
-h1{font-size:26px;margin:0 0 4px;letter-spacing:-.02em}
-h2{font-size:18px;margin:0 0 12px}
-h3{font-size:15px;margin:0 0 6px}
-.mut{color:var(--mut)}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:12px}
-.roles{display:grid;gap:8px;margin:18px 0}
-.role{display:flex;gap:12px;align-items:center;text-align:left;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px;cursor:pointer;width:100%}
-.role[aria-pressed=true]{border-color:var(--pri);box-shadow:0 0 0 2px var(--pri) inset}
-.role b{display:block}.role small{color:var(--mut)}
-.ic{font-size:22px;width:38px;height:38px;display:grid;place-items:center;background:var(--bg);border-radius:10px;flex:none}
-label{display:block;font-weight:500;margin:10px 0 4px}
-input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--card)}
-.btn{background:var(--pri);color:var(--pt);border:0;border-radius:8px;padding:10px 16px;font-weight:600;cursor:pointer}
-.btn.sec{background:transparent;color:var(--tx);border:1px solid var(--bd)}
-.btn.sm{padding:6px 10px;font-size:13px}
-.full{width:100%;margin-top:14px}
-.err{background:var(--rdb);color:var(--rd);padding:10px 12px;border-radius:8px;margin-top:12px}
-.msg{background:var(--okb);color:var(--ok);padding:10px 12px;border-radius:8px;margin-bottom:12px}
-.top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:14px}
-.tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto}
-.tab{background:transparent;border:1px solid var(--bd);border-radius:999px;padding:6px 14px;cursor:pointer;white-space:nowrap}
-.tab[aria-selected=true]{background:var(--pri);color:var(--pt);border-color:var(--pri)}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:12px}
-.stat b{font-size:24px;display:block}
-.scroll{overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:520px}
-th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--bd);vertical-align:middle}
-th{font-weight:500;color:var(--mut);font-size:13px}
-.pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600}
-.s-Ativo{background:var(--okb);color:var(--ok)}.s-Suspenso{background:var(--wnb);color:var(--wn)}.s-Arquivado{background:var(--bg);color:var(--mut)}.s-Concluso{background:var(--blb);color:var(--bl)}.s-Recurso{background:var(--rdb);color:var(--rd)}
-.row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-.grid2{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
-.tl{border-left:2px solid var(--bd);margin:8px 0 0 6px;padding-left:16px}
-.ev{position:relative;margin-bottom:16px}
-.ev:before{content:"";position:absolute;left:-23px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--pri)}
-.ev.int:before{background:var(--wn)}
-.link{background:none;border:0;padding:0;color:var(--pri);cursor:pointer;font-weight:600;text-align:left}
-.sw{display:flex;align-items:center;gap:8px;margin:6px 0;font-weight:400}
-.sw input{width:auto}
-code{background:var(--bg);padding:2px 6px;border-radius:6px}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GTech Jurídico · Portal de Processos</title>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>tailwind.config={theme:{extend:{colors:{pri:'#0B3C5D',sec:'#328CC1',bg:'#F4F7F6'}}}}</script>
+<style type="text/tailwindcss">
+body{@apply bg-bg text-slate-800;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+.card{@apply rounded-xl border border-slate-200 bg-white p-5 shadow-sm}
+.in{@apply w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sec}
+.lbl{@apply mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500}
+.bp{@apply cursor-pointer rounded-lg bg-sec px-4 py-2 text-sm font-bold text-white transition hover:bg-pri}
+.b2{@apply cursor-pointer rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50}
+.tab{@apply cursor-pointer whitespace-nowrap rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/20}
+.tab.on{@apply bg-white text-pri}
+.tab2{@apply cursor-pointer rounded-t-lg border-b-2 border-transparent px-4 py-2 text-sm font-semibold text-slate-500 hover:text-pri}
+.tab2.on{@apply border-sec text-pri}
+.bd{@apply inline-block rounded-full px-3 py-1 text-xs font-bold}
+th{@apply bg-slate-50 px-3 py-2 text-left text-xs font-bold uppercase text-pri}
+td{@apply border-b border-slate-100 px-3 py-2 text-sm}
 </style>
 </head>
-<body>
-<div class="wrap" id="app"></div>
+<body class="min-h-screen">
+
+<!-- LOGIN ÚNICO -->
+<div id="login" class="flex min-h-screen items-center justify-center bg-gradient-to-br from-pri to-sec p-4">
+  <div class="w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl">
+    <div class="mb-6 text-center">
+      <div class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-pri text-2xl text-white">⚖</div>
+      <h1 class="text-2xl font-extrabold text-pri">GTech Jurídico</h1>
+      <p class="text-sm text-slate-500">Acompanhamento processual seguro</p>
+    </div>
+    <form onsubmit="entrar(event)" class="space-y-4">
+      <div><label class="lbl">Usuário</label><input id="lg-u" class="in" autocomplete="username" required></div>
+      <div><label class="lbl">Senha</label><input id="lg-p" type="password" class="in" autocomplete="current-password" required></div>
+      <p id="lg-err" class="hidden rounded-lg bg-red-50 p-2 text-sm text-red-700">Usuário ou senha inválidos.</p>
+      <button class="bp w-full !py-3 text-base">Entrar</button>
+    </form>
+    <details class="mt-5 text-xs text-slate-500"><summary class="cursor-pointer font-semibold">Acessos de demonstração</summary>
+      <p class="mt-2">admin / <b>Admin@123</b><br>dra.helena / <b>Helena@123</b><br>ana.moura / <b>Cliente@123</b><br>horizonte / <b>Cliente@123</b></p></details>
+    <p class="mt-5 text-center text-xs text-slate-400">🔒 Ambiente protegido pelo sigilo profissional e pela LGPD (Lei 13.709/2018). Cada usuário visualiza apenas o que lhe é autorizado.</p>
+  </div>
+</div>
+
+<!-- APLICAÇÃO -->
+<div id="app" class="hidden min-h-screen flex-col">
+  <header class="bg-pri text-white shadow">
+    <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3">
+      <div class="flex items-center gap-2"><span class="text-2xl">⚖</span><span class="text-lg font-extrabold">GTech Jurídico</span></div>
+      <div class="flex flex-wrap items-center gap-3">
+        <button onclick="exportar()" class="rounded-xl bg-emerald-500 px-4 py-2 text-sm font-extrabold text-white shadow-lg ring-4 ring-emerald-300/40 transition hover:bg-emerald-600 cursor-pointer">⬇ Exportar e salvar dados</button>
+        <button id="bell" onclick="ir('notif')" class="relative hidden text-xl cursor-pointer" title="Notificações">🔔<span id="bell-n" class="absolute -right-2 -top-2 hidden rounded-full bg-red-500 px-1.5 text-xs font-bold"></span></button>
+        <span id="me-nome" class="text-sm font-semibold"></span>
+        <button onclick="sair()" class="rounded-lg border border-white/40 px-3 py-1.5 text-sm hover:bg-white/10 cursor-pointer">Sair</button>
+      </div>
+    </div>
+    <nav id="nav" class="mx-auto flex max-w-6xl gap-2 overflow-x-auto px-4 pb-3"></nav>
+  </header>
+  <main id="view" class="mx-auto w-full max-w-6xl flex-1 px-4 py-6"></main>
+  <footer class="bg-pri p-4 text-center text-xs text-white/80">© 2026 GTech Soluções Tecnológicas · Fortaleza/CE · Informações confidenciais, protegidas por sigilo profissional e pela LGPD.</footer>
+</div>
+<div id="toast" class="fixed bottom-5 right-5 z-50 hidden max-w-sm rounded-lg bg-slate-900 px-4 py-3 text-sm text-white shadow-lg"></div>
+
 <script>
-const $=s=>document.querySelector(s);
-const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const PERF={sistema:{n:'Administrador do sistema',d:'Programador: cria usuários e define acessos e permissões gerais',i:'🛠️'},
-juridico:{n:'Administrador jurídico',d:'Escritório: gerencia clientes e quem vê cada processo',i:'⚖️'},
-cliente:{n:'Cliente',d:'Acompanhe seus processos com transparência',i:'👤'}};
-const PERMS={ver_processos:'Ver processos',editar_processos:'Criar e editar processos',gerir_clientes:'Gerenciar clientes',gerir_usuarios:'Gerenciar usuários',ver_logs:'Ver logs de acesso'};
-const STAT={Ativo:['Ativo','Seu processo está em andamento normal.'],Suspenso:['Suspenso','O andamento está temporariamente parado.'],Arquivado:['Arquivado','O processo foi encerrado e guardado.'],Concluso:['Concluso','Aguardando decisão do juiz.'],Recurso:['Em recurso','Foi pedida nova análise a um tribunal superior.']};
-let D={
-users:[
-{id:1,nome:'Dev Admin',email:'sistema@jurisflow.com',senha:'dev123',perfil:'sistema',ativo:true},
-{id:2,nome:'Dra. Helena Prado',email:'juridico@jurisflow.com',senha:'adv123',perfil:'juridico',ativo:true},
-{id:3,nome:'Maria Souza',email:'cliente@jurisflow.com',senha:'cli123',perfil:'cliente',ativo:true},
-{id:4,nome:'João Ribeiro',email:'joao@jurisflow.com',senha:'cli123',perfil:'cliente',ativo:true}],
-perms:{sistema:{ver_processos:1,editar_processos:1,gerir_clientes:1,gerir_usuarios:1,ver_logs:1},
-juridico:{ver_processos:1,editar_processos:1,gerir_clientes:1,gerir_usuarios:0,ver_logs:0},
-cliente:{ver_processos:1,editar_processos:0,gerir_clientes:0,gerir_usuarios:0,ver_logs:0}},
-procs:[
-{id:1,cnj:'0001234-56.2025.8.26.0100',titulo:'Ação de indenização por danos materiais',area:'Cível',status:'Ativo',cli:[3],vis:{3:true},
-movs:[{d:'2026-09-28',t:'Audiência de conciliação marcada',x:'Audiência marcada para 20/10/2026 às 14h, no fórum central.',pub:true},
-{d:'2026-09-15',t:'Estratégia para a audiência',x:'Avaliar proposta de acordo até R$ 18 mil.',pub:false},
-{d:'2026-08-02',t:'Petição inicial protocolada',x:'A petição foi enviada ao tribunal e distribuída.',pub:true}]},
-{id:2,cnj:'0004567-12.2024.5.02.0010',titulo:'Reclamação trabalhista',area:'Trabalhista',status:'Concluso',cli:[3],vis:{3:false},
-movs:[{d:'2026-09-30',t:'Concluso para sentença',x:'Autos enviados ao juiz para decisão.',pub:true}]},
-{id:3,cnj:'0007890-33.2025.8.26.0001',titulo:'Revisão de contrato de aluguel',area:'Cível',status:'Suspenso',cli:[4],vis:{4:true},
-movs:[{d:'2026-09-10',t:'Processo suspenso por acordo',x:'As partes pediram pausa para negociar.',pub:true}]}],
-logs:[]};
-try{const s=localStorage.getItem('jf');if(s)D=JSON.parse(s)}catch(e){}
-function save(){try{localStorage.setItem('jf',JSON.stringify(D))}catch(e){}}
-let S=null,role='cliente',tab='',sel=null,note='',err='';
-const can=p=>S&&D.perms[S.perfil][p];
-function log(a){D.logs.unshift({t:new Date().toLocaleString('pt-BR'),u:S?S.nome:'—',a});D.logs=D.logs.slice(0,40);save()}
-const tmp=()=>Math.random().toString(36).slice(2,6)+Math.random().toString(36).slice(2,6).toUpperCase()+'#7';
-const uname=id=>(D.users.find(u=>u.id==id)||{}).nome||'—';
-const fd=d=>d.split('-').reverse().join('/');
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,10);
+const today=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const addD=n=>{const d=new Date(today()+'T12:00:00');d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)};
+const fd=s=>s?new Date(s+'T12:00:00').toLocaleDateString('pt-BR'):'';
+async function H(s){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('jur:'+s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){return'p:'+s}}
+function toast(t){const e=$('toast');e.textContent=t;e.classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.add('hidden'),3500)}
+const MOV=['Andamento','Decisão judicial','Despacho','Parecer','Orientação e próximos passos'],CATS=['Petição','Defesa','Acusação','Prova','Decisão','Contrato','Outro'],AGT=['Audiência','Prazo','Reunião','Compromisso'],STAT=['Em andamento','Aguardando decisão','Suspenso','Encerrado'];
+const COR={'Em andamento':'bg-emerald-100 text-emerald-800','Aguardando decisão':'bg-amber-100 text-amber-800','Suspenso':'bg-slate-200 text-slate-700','Encerrado':'bg-red-100 text-red-800'};
+let DB,ME,st={view:'painel'};
 
-function doLogin(){
- const e=$('#em').value.trim().toLowerCase(),p=$('#pw').value;
- const u=D.users.find(x=>x.email===e&&x.senha===p&&x.perfil===role);
- if(!u){err='E-mail ou senha incorretos para este tipo de acesso.';return render()}
- if(!u.ativo){err='Esta conta está desativada. Fale com o administrador.';return render()}
- S=u;err='';sel=null;note='';tab={sistema:'usuarios',juridico:'processos',cliente:'processos'}[u.perfil];log('Login realizado ('+PERF[u.perfil].n+')');render()
-}
-function logout(){log('Logout');S=null;sel=null;note='';render()}
-function pick(r){role=r;err='';render()}
-function setTab(t){tab=t;sel=null;note='';render()}
-function open_(id){sel=id;log('Abriu o processo #'+id);render()}
+/* ---------- dados ---------- */
+const save=()=>{try{localStorage.setItem('jur_db',JSON.stringify(DB))}catch(e){toast('Armazenamento local cheio: exporte os dados e remova anexos grandes.')}};
+async function seed(){
+  const U=(login,s,nome,tipo,clienteId)=>H(s).then(hash=>({id:uid(),login,hash,nome,tipo,clienteId}));
+  const us=await Promise.all([U('admin','Admin@123','Administração','admin'),U('dra.helena','Helena@123','Dra. Helena Duarte','advogado'),U('ana.moura','Cliente@123','Ana Beatriz Moura','cliente','c1'),U('horizonte','Cliente@123','Construtora Horizonte','cliente','c2')]);
+  const adv=us[1].id;
+  DB={users:us,clientes:[{id:'c1',nome:'Ana Beatriz Moura',doc:'123.456.789-01',email:'ana@email.com',tel:'(85) 99999-1111',end:'Av. Beira Mar, 2100 - Meireles, Fortaleza/CE'},{id:'c2',nome:'Construtora Horizonte LTDA',doc:'12.345.678/0001-90',email:'juridico@horizonte.com',tel:'(85) 3222-0000',end:'Av. Dom Luís, 1200 - Aldeota, Fortaleza/CE'}],
+  processos:[{id:'p1',numero:'0001234-56.2026.5.07.0001',clienteId:'c1',advId:adv,area:'Trabalhista',vara:'1ª Vara do Trabalho de Fortaleza',status:'Em andamento',objeto:'Reclamação trabalhista – verbas rescisórias e horas extras.'},{id:'p2',numero:'0807788-21.2026.8.06.0001',clienteId:'c2',advId:adv,area:'Cível',vara:'3ª Vara Cível de Fortaleza',status:'Aguardando decisão',objeto:'Ação de cobrança por inadimplemento contratual.'}],
+  movs:[{id:uid(),procId:'p1',data:addD(-20),tipo:'Andamento',titulo:'Petição inicial protocolada',texto:'A petição inicial foi distribuída e aguarda despacho do juízo.',vis:true},{id:uid(),procId:'p1',data:addD(-8),tipo:'Despacho',titulo:'Audiência designada',texto:'O juízo designou audiência inicial e determinou a citação da parte reclamada.',vis:true},{id:uid(),procId:'p1',data:addD(-3),tipo:'Orientação e próximos passos',titulo:'Preparação para a audiência',texto:'Separar holerites, cartões de ponto e comprovantes. Chegar com 30 minutos de antecedência.',vis:true},{id:uid(),procId:'p1',data:addD(-2),tipo:'Parecer',titulo:'Estratégia (nota interna)',texto:'Avaliar proposta de acordo conforme resposta da reclamada.',vis:false},{id:uid(),procId:'p2',data:addD(-12),tipo:'Decisão judicial',titulo:'Tutela de urgência indeferida',texto:'O pedido de tutela foi indeferido; o processo segue o rito comum.',vis:true}],
+  docs:[],agenda:[{id:uid(),procId:'p1',tipo:'Audiência',titulo:'Audiência inicial',data:addD(6),hora:'09:30',local:'Fórum Trabalhista – Sala 4'},{id:uid(),procId:'p2',tipo:'Prazo',titulo:'Prazo para manifestação',data:addD(3),hora:'23:59',local:'Peticionamento eletrônico'}],notifs:[]};
+  save()}
+async function init(){try{DB=JSON.parse(localStorage.getItem('jur_db'))}catch(e){}if(!DB||!DB.users)await seed();
+  const id=sessionStorage.getItem('jur_me');ME=DB.users.find(u=>u.id===id);if(ME)show()}
+const staff=()=>ME.tipo!=='cliente',adm=()=>ME.tipo==='admin';
+const proc=id=>DB.processos.find(p=>p.id===id),cli=id=>DB.clientes.find(c=>c.id===id)||{nome:'—'};
+const procsVis=()=>DB.processos.filter(p=>adm()||(ME.tipo==='advogado'&&p.advId===ME.id)||(ME.tipo==='cliente'&&p.clienteId===ME.clienteId));
+const ids=()=>new Set(procsVis().map(p=>p.id));
+function notify(procId,texto){const p=proc(procId);DB.users.filter(u=>u.clienteId===p.clienteId).forEach(u=>DB.notifs.push({id:uid(),userId:u.id,procId,texto:texto+' · Proc. '+p.numero,data:new Date().toISOString(),lida:false}))}
 
-function loginView(){
- return `<div class="login"><h1>JurisFlow</h1><p class="mut">Gestão e acompanhamento de processos jurídicos.</p>
- <div class="roles" role="group" aria-label="Tipo de acesso">${Object.keys(PERF).map(k=>`<button class="role" aria-pressed="${k===role}" onclick="pick('${k}')"><span class="ic">${PERF[k].i}</span><span><b>${PERF[k].n}</b><small>${PERF[k].d}</small></span></button>`).join('')}</div>
- <div class="card"><h2>Entrar como ${PERF[role].n.toLowerCase()}</h2>
- <label for="em">E-mail</label><input id="em" type="email" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()">
- <label for="pw">Senha</label><input id="pw" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
- ${err?`<div class="err" role="alert">${esc(err)}</div>`:''}
- <button class="btn full" onclick="doLogin()">Entrar</button>
- <p class="mut" style="font-size:13px;margin:12px 0 0">Conta de teste: <button class="link" onclick="demo()">preencher automaticamente</button></p></div>
- <p class="mut" style="font-size:12px">Protótipo de demonstração: os dados ficam só neste navegador. Em produção, a autenticação roda no servidor com senhas em hash.</p></div>`;
-}
-function demo(){const m={sistema:['sistema@jurisflow.com','dev123'],juridico:['juridico@jurisflow.com','adv123'],cliente:['cliente@jurisflow.com','cli123']}[role];$('#em').value=m[0];$('#pw').value=m[1]}
-
-function shell(inner,tabs){
- return `<div class="top"><div><h2 style="margin:0">JurisFlow</h2><span class="mut">${esc(S.nome)} · ${PERF[S.perfil].n}</span></div><button class="btn sec sm" onclick="logout()">Sair</button></div>
- ${note?`<div class="msg" role="status">${note}</div>`:''}
- ${tabs?`<div class="tabs" role="tablist">${tabs.map(([k,l])=>`<button class="tab" role="tab" aria-selected="${tab===k}" onclick="setTab('${k}')">${l}</button>`).join('')}</div>`:''}${inner}`;
-}
-
-/* ---------- Administrador do sistema ---------- */
-function sistemaView(){
- let h='';
- if(tab==='usuarios'){
-  h=`<div class="stats"><div class="card stat"><b>${D.users.length}</b>Usuários</div><div class="card stat"><b>${D.users.filter(u=>u.ativo).length}</b>Ativos</div><div class="card stat"><b>${D.users.filter(u=>u.perfil==='cliente').length}</b>Clientes</div></div>
-  <div class="card"><h2>Criar usuário</h2><div class="grid2">
-  <div><label for="nn">Nome</label><input id="nn"></div><div><label for="ne">E-mail</label><input id="ne" type="email"></div>
-  <div><label for="np">Tipo de acesso</label><select id="np">${Object.keys(PERF).map(k=>`<option value="${k}">${PERF[k].n}</option>`).join('')}</select></div></div>
-  <button class="btn" style="margin-top:12px" onclick="addUser()">Criar e gerar senha temporária</button></div>
-  <div class="card scroll"><h2>Usuários</h2><table><tr><th>Nome</th><th>Acesso</th><th>Status</th><th></th></tr>
-  ${D.users.map(u=>`<tr><td>${esc(u.nome)}<br><span class="mut" style="font-size:13px">${esc(u.email)}</span></td><td>${PERF[u.perfil].n}</td><td><span class="pill ${u.ativo?'s-Ativo':'s-Arquivado'}">${u.ativo?'Ativo':'Desativado'}</span></td>
-  <td>${u.id===S.id?'':`<button class="btn sec sm" onclick="togUser(${u.id})">${u.ativo?'Desativar':'Ativar'}</button> <button class="btn sec sm" onclick="resetPw(${u.id})">Nova senha</button>`}</td></tr>`).join('')}</table></div>`;
- }else if(tab==='permissoes'){
-  h=`<div class="card"><h2>Permissões por tipo de acesso</h2><p class="mut">Mudanças valem imediatamente para todos os usuários do perfil.</p>
-  <div class="grid2">${['sistema','juridico','cliente'].map(r=>`<div><h3>${PERF[r].n}</h3>${Object.keys(PERMS).map(p=>`<label class="sw"><input type="checkbox" ${D.perms[r][p]?'checked':''} ${r==='sistema'&&p==='gerir_usuarios'?'disabled':''} onchange="setPerm('${r}','${p}',this.checked)">${PERMS[p]}</label>`).join('')}</div>`).join('')}</div></div>`;
- }else{
-  h=`<div class="card scroll"><h2>Logs de acesso</h2>${D.logs.length?`<table><tr><th>Quando</th><th>Quem</th><th>Ação</th></tr>${D.logs.map(l=>`<tr><td>${esc(l.t)}</td><td>${esc(l.u)}</td><td>${esc(l.a)}</td></tr>`).join('')}</table>`:'<p class="mut">Nenhum acesso registrado ainda.</p>'}</div>`;
- }
- return shell(h,[['usuarios','Usuários'],['permissoes','Permissões'],['logs','Logs']]);
-}
-function mkUser(nome,email,perfil){
- if(!nome||!email)return null;
- if(D.users.some(u=>u.email===email.toLowerCase())){note='Já existe um usuário com este e-mail.';return null}
- const senha=tmp(),u={id:Date.now(),nome,email:email.toLowerCase(),senha,perfil,ativo:true};D.users.push(u);save();return u;
-}
-function addUser(){const u=mkUser($('#nn').value.trim(),$('#ne').value.trim(),$('#np').value);
- if(u){note=`Usuário criado. Senha temporária de ${esc(u.nome)}: <code>${esc(u.senha)}</code>`;log('Criou usuário '+u.nome)}else if(!note)note='Preencha nome e e-mail.';render()}
-function togUser(id){const u=D.users.find(x=>x.id===id);u.ativo=!u.ativo;log((u.ativo?'Ativou ':'Desativou ')+u.nome);save();render()}
-function resetPw(id){const u=D.users.find(x=>x.id===id);u.senha=tmp();save();note=`Nova senha de ${esc(u.nome)}: <code>${esc(u.senha)}</code>`;log('Redefiniu senha de '+u.nome);render()}
-function setPerm(r,p,v){D.perms[r][p]=v?1:0;log(`Permissão "${PERMS[p]}" ${v?'concedida a':'removida de'} ${PERF[r].n}`);save()}
-
-/* ---------- Detalhe do processo (jurídico e cliente) ---------- */
-function detail(p,isCli){
- const movs=p.movs.filter(m=>!isCli||m.pub).sort((a,b)=>b.d.localeCompare(a.d));
- const st=STAT[p.status];
- let h=`<button class="link" onclick="sel=null;render()">‹ Voltar</button>
- <div class="card" style="margin-top:10px"><div class="row"><h2 style="margin:0">${esc(p.titulo)}</h2><span class="pill s-${p.status}">${st[0]}</span></div>
- <p class="mut" style="margin:6px 0 0">${esc(p.area)} · Nº ${esc(p.cnj)}</p>${isCli?`<p style="margin:8px 0 0">${st[1]}</p>`:''}</div>`;
- if(!isCli){
-  h+=`<div class="card"><h3>Quem pode ver este processo</h3>${p.cli.map(c=>`<label class="sw"><input type="checkbox" ${p.vis[c]?'checked':''} onchange="togVis(${p.id},${c},this.checked)">${esc(uname(c))} pode visualizar</label>`).join('')||'<span class="mut">Nenhum cliente vinculado.</span>'}</div>`;
-  if(can('editar_processos'))h+=`<div class="card"><h3>Nova movimentação</h3><label for="mt">Título</label><input id="mt"><label for="mx">Descrição</label><textarea id="mx" rows="3"></textarea>
-  <label class="sw"><input type="checkbox" id="mp" checked>Visível ao cliente</label><button class="btn sm" onclick="addMov(${p.id})">Adicionar à linha do tempo</button></div>`;
- }
- h+=`<div class="card"><h3>Linha do tempo</h3><div class="tl">${movs.map(m=>`<div class="ev ${m.pub?'':'int'}"><b>${esc(m.t)}</b> ${!isCli&&!m.pub?'<span class="pill s-Suspenso">Interno</span>':''}<div class="mut" style="font-size:13px">${fd(m.d)}</div><div>${esc(m.x)}</div></div>`).join('')||'<span class="mut">Sem movimentações.</span>'}</div></div>`;
- return h;
-}
-function togVis(pid,cid,v){const p=D.procs.find(x=>x.id===pid);p.vis[cid]=v;log(`${v?'Liberou':'Bloqueou'} o processo #${pid} para ${uname(cid)}`);save()}
-function addMov(pid){const t=$('#mt').value.trim();if(!t){note='Informe um título.';return render()}
- D.procs.find(x=>x.id===pid).movs.push({d:new Date().toISOString().slice(0,10),t,x:$('#mx').value.trim(),pub:$('#mp').checked});log('Nova movimentação no processo #'+pid);save();note='Movimentação adicionada.';render()}
-
-/* ---------- Administrador jurídico ---------- */
-function juridicoView(){
- let h='';const tabs=[['processos','Processos']];if(can('gerir_clientes'))tabs.push(['clientes','Clientes']);
- if(tab==='clientes'&&can('gerir_clientes')){
-  const cl=D.users.filter(u=>u.perfil==='cliente');
-  h=`<div class="card"><h2>Novo cliente</h2><div class="grid2"><div><label for="nn">Nome</label><input id="nn"></div><div><label for="ne">E-mail</label><input id="ne" type="email"></div></div>
-  <button class="btn" style="margin-top:12px" onclick="addCli()">Cadastrar e gerar acesso</button></div>
-  <div class="card scroll"><h2>Clientes</h2><table><tr><th>Cliente</th><th>Processos liberados</th><th></th></tr>${cl.map(c=>`<tr><td>${esc(c.nome)}<br><span class="mut" style="font-size:13px">${esc(c.email)}</span></td><td>${D.procs.filter(p=>p.cli.includes(c.id)&&p.vis[c.id]).length} de ${D.procs.filter(p=>p.cli.includes(c.id)).length}</td>
-  <td><button class="btn sec sm" onclick="togUser(${c.id})">${c.ativo?'Desativar':'Ativar'}</button></td></tr>`).join('')}</table></div>`;
- }else if(sel){h=detail(D.procs.find(p=>p.id===sel),false)}
- else{
-  const at=D.procs.filter(p=>p.status==='Ativo').length;
-  h=`<div class="stats"><div class="card stat"><b>${D.procs.length}</b>Processos</div><div class="card stat"><b>${at}</b>Ativos</div><div class="card stat"><b>${D.users.filter(u=>u.perfil==='cliente').length}</b>Clientes</div></div>
-  ${can('editar_processos')?`<div class="card"><h2>Novo processo</h2><div class="grid2"><div><label for="pt">Título</label><input id="pt"></div><div><label for="pc">Número CNJ</label><input id="pc" placeholder="0000000-00.0000.0.00.0000"></div>
-  <div><label for="pa">Área</label><select id="pa"><option>Cível</option><option>Trabalhista</option><option>Criminal</option><option>Família</option></select></div>
-  <div><label for="pl">Cliente</label><select id="pl">${D.users.filter(u=>u.perfil==='cliente').map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`).join('')}</select></div></div>
-  <button class="btn" style="margin-top:12px" onclick="addProc()">Criar processo</button></div>`:''}
-  <div class="card scroll"><h2>Processos</h2><table><tr><th>Processo</th><th>Cliente</th><th>Status</th></tr>${D.procs.map(p=>`<tr><td><button class="link" onclick="open_(${p.id})">${esc(p.titulo)}</button><br><span class="mut" style="font-size:13px">${esc(p.cnj)}</span></td><td>${p.cli.map(uname).map(esc).join(', ')}</td><td><span class="pill s-${p.status}">${STAT[p.status][0]}</span></td></tr>`).join('')}</table></div>`;
- }
- return shell(h,tabs);
-}
-function addCli(){const u=mkUser($('#nn').value.trim(),$('#ne').value.trim(),'cliente');
- if(u){note=`Cliente cadastrado. Senha temporária de ${esc(u.nome)}: <code>${esc(u.senha)}</code>`;log('Cadastrou cliente '+u.nome)}else if(!note)note='Preencha nome e e-mail.';render()}
-function addProc(){const t=$('#pt').value.trim(),c=$('#pc').value.trim(),cl=+$('#pl').value;
- if(!t||!c||!cl){note='Informe título, número CNJ e cliente.';return render()}
- D.procs.push({id:Date.now(),cnj:c,titulo:t,area:$('#pa').value,status:'Ativo',cli:[cl],vis:{[cl]:false},movs:[]});log('Criou processo '+t);save();note='Processo criado. Libere a visualização ao cliente dentro do processo.';render()}
-
-/* ---------- Cliente ---------- */
-function clienteView(){
- const mine=D.procs.filter(p=>p.cli.includes(S.id)&&p.vis[S.id]);
- let h;
- if(sel){const p=mine.find(x=>x.id===sel);h=p?detail(p,true):'<p>Processo indisponível.</p>'}
- else h=`<div class="card"><h2>Meus processos</h2>${mine.length?mine.map(p=>`<div class="row" style="padding:10px 0;border-bottom:1px solid var(--bd)"><div><button class="link" onclick="open_(${p.id})">${esc(p.titulo)}</button><div class="mut" style="font-size:13px">${STAT[p.status][1]}</div></div><span class="pill s-${p.status}">${STAT[p.status][0]}</span></div>`).join(''):'<p class="mut">Seu advogado ainda não liberou nenhum processo para visualização.</p>'}</div>`;
- return shell(h,null);
-}
-
+/* ---------- sessão ---------- */
+async function entrar(e){e.preventDefault();const l=$('lg-u').value.trim().toLowerCase(),h=await H($('lg-p').value);const u=DB.users.find(x=>x.login===l&&x.hash===h);
+  if(!u){$('lg-err').classList.remove('hidden');return}$('lg-err').classList.add('hidden');ME=u;sessionStorage.setItem('jur_me',u.id);st={view:u.tipo==='cliente'?'processos':'painel'};$('lg-p').value='';show()}
+function sair(){sessionStorage.removeItem('jur_me');ME=null;$('app').classList.add('hidden');$('app').classList.remove('flex');$('login').classList.remove('hidden')}
+['click','keydown'].forEach(ev=>addEventListener(ev,()=>{clearTimeout(window._idle);window._idle=setTimeout(()=>{if(ME){sair();toast('Sessão encerrada por inatividade.')}},9e5)}));
+function show(){$('login').classList.add('hidden');$('app').classList.remove('hidden');$('app').classList.add('flex');$('me-nome').textContent=ME.nome;$('bell').classList.toggle('hidden',staff());render()}
+function ir(v,extra){st={view:v,...extra};render();scrollTo(0,0)}
 function render(){
- let h=!S?loginView():S.perfil==='sistema'?sistemaView():S.perfil==='juridico'?juridicoView():clienteView();
- $('#app').innerHTML=h;note='';
-}
-render();
+  const m=staff()?[['painel','Painel'],['clientes','Clientes'],['processos','Processos'],['agenda','Agenda'],...(adm()?[['acessos','Acessos']]:[])]:[['processos','Meus processos'],['agenda','Agenda'],['notif','Notificações']];
+  $('nav').innerHTML=m.map(([k,v])=>`<button class="tab ${st.view===k||(st.view==='det'&&k==='processos')?'on':''}" onclick="ir('${k}')">${v}</button>`).join('');
+  const n=DB.notifs.filter(x=>x.userId===ME.id&&!x.lida).length;$('bell-n').textContent=n;$('bell-n').classList.toggle('hidden',!n);
+  $('view').innerHTML=({painel:vPainel,clientes:vClientes,processos:vProcessos,det:vDet,agenda:vAgenda,acessos:vAcessos,notif:vNotif})[st.view]()}
+
+/* ---------- views ---------- */
+const kpi=(t,v,i)=>`<div class="card"><div class="text-2xl">${i}</div><div class="mt-1 text-3xl font-extrabold text-pri">${v}</div><div class="text-xs font-semibold uppercase text-slate-500">${t}</div></div>`;
+const bd=s=>`<span class="bd ${COR[s]||'bg-slate-100'}">${esc(s)}</span>`;
+const agItem=a=>`<li class="flex items-center gap-3 py-2"><div class="w-14 shrink-0 rounded-lg bg-pri py-1 text-center text-xs font-bold text-white">${fd(a.data).slice(0,5)}<div class="font-normal">${esc(a.hora)}</div></div><div class="min-w-0"><div class="text-sm font-semibold">${esc(a.tipo)} · ${esc(a.titulo)}</div><div class="truncate text-xs text-slate-500">${esc(a.local)} · Proc. ${esc(proc(a.procId)?.numero)}</div></div></li>`;
+function vPainel(){const ps=procsVis(),I=ids(),ag=DB.agenda.filter(a=>I.has(a.procId)&&a.data>=today()).sort((a,b)=>(a.data+a.hora).localeCompare(b.data+b.hora)),mv=DB.movs.filter(m=>I.has(m.procId)).sort((a,b)=>b.data.localeCompare(a.data)).slice(0,6);
+  return`<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">${kpi('Clientes',DB.clientes.length,'👥')+kpi('Processos ativos',ps.filter(p=>p.status!=='Encerrado').length,'📁')+kpi('Compromissos em 7 dias',ag.filter(a=>a.data<=addD(7)).length,'📅')+kpi('Prazos em aberto',ag.filter(a=>a.tipo==='Prazo').length,'⏰')}</div>
+  <div class="mt-5 grid gap-5 lg:grid-cols-2"><section class="card"><h3 class="mb-2 font-bold text-pri">Próximos compromissos</h3><ul class="divide-y">${ag.slice(0,6).map(agItem).join('')||'<li class="text-sm text-slate-400">Nada agendado.</li>'}</ul></section>
+  <section class="card"><h3 class="mb-2 font-bold text-pri">Últimas movimentações</h3><ul class="divide-y">${mv.map(m=>`<li class="py-2 text-sm"><b>${esc(m.titulo)}</b> <span class="text-xs text-slate-500">· ${fd(m.data)} · ${esc(cli(proc(m.procId).clienteId).nome)}</span></li>`).join('')}</ul></section></div>`}
+
+function vClientes(){const q=(st.q||'').toLowerCase(),L=DB.clientes.filter(c=>(c.nome+c.doc+c.email).toLowerCase().includes(q));
+  return`<div class="mb-4 flex flex-wrap items-center justify-between gap-3"><h2 class="text-xl font-extrabold text-pri">Clientes</h2><input class="in !w-64" placeholder="Buscar cliente…" value="${esc(st.q||'')}" oninput="st.q=this.value;render();const i=document.querySelector('#view input');i.focus();i.setSelectionRange(99,99)"></div>
+  <details class="card mb-5"><summary class="cursor-pointer font-bold text-sec">+ Cadastrar novo cliente (com acesso individual)</summary>
+  <form onsubmit="novoCliente(event)" class="mt-4 grid gap-3 sm:grid-cols-2"><div><label class="lbl">Nome / Razão social</label><input name="nome" class="in" required></div><div><label class="lbl">CPF / CNPJ</label><input name="doc" class="in" required></div>
+  <div><label class="lbl">E-mail</label><input name="email" type="email" class="in" required></div><div><label class="lbl">Telefone / WhatsApp</label><input name="tel" class="in" required></div><div class="sm:col-span-2"><label class="lbl">Endereço</label><input name="end" class="in"></div>
+  <div><label class="lbl">Login de acesso</label><input name="login" class="in" required></div><div><label class="lbl">Senha inicial (mín. 8)</label><input name="senha" type="password" minlength="8" class="in" required></div><div class="sm:col-span-2"><button class="bp">Cadastrar cliente</button></div></form></details>
+  <div class="card overflow-x-auto !p-0"><table class="w-full min-w-[640px]"><thead><tr><th>Cliente</th><th>Documento</th><th>Contato</th><th>Processos</th><th></th></tr></thead><tbody>${L.map(c=>`<tr><td class="font-semibold">${esc(c.nome)}</td><td>${esc(c.doc)}</td><td>${esc(c.email)}<br><span class="text-xs text-slate-500">${esc(c.tel)}</span></td><td>${DB.processos.filter(p=>p.clienteId===c.id).length}</td><td class="whitespace-nowrap"><button class="font-semibold text-sec cursor-pointer" onclick="ir('processos',{cli:'${c.id}'})">Ver processos</button>${adm()?` · <button class="text-red-600 cursor-pointer" onclick="delCliente('${c.id}')">Excluir</button>`:''}</td></tr>`).join('')||'<tr><td colspan="5" class="text-slate-400">Nenhum cliente.</td></tr>'}</tbody></table></div>`}
+async function novoCliente(e){e.preventDefault();const f=Object.fromEntries(new FormData(e.target)),l=f.login.trim().toLowerCase();if(DB.users.some(u=>u.login===l))return toast('Este login já existe.');
+  const id='c'+uid();DB.clientes.push({id,nome:f.nome,doc:f.doc,email:f.email,tel:f.tel,end:f.end});DB.users.push({id:uid(),login:l,hash:await H(f.senha),nome:f.nome,tipo:'cliente',clienteId:id});save();render();toast('Cliente cadastrado com acesso individual.')}
+function delCliente(id){if(!confirm('Excluir cliente, acessos e processos vinculados?'))return;const pid=DB.processos.filter(p=>p.clienteId===id).map(p=>p.id);DB.clientes=DB.clientes.filter(c=>c.id!==id);DB.users=DB.users.filter(u=>u.clienteId!==id);DB.processos=DB.processos.filter(p=>p.clienteId!==id);['movs','docs','agenda'].forEach(k=>DB[k]=DB[k].filter(x=>!pid.includes(x.procId)));save();render()}
+
+function vProcessos(){const S=staff(),q=(st.q||'').toLowerCase();let L=procsVis().filter(p=>(!st.cli||p.clienteId===st.cli)&&(p.numero+p.area+p.objeto+cli(p.clienteId).nome).toLowerCase().includes(q));
+  const advs=DB.users.filter(u=>u.tipo!=='cliente');
+  return`<div class="mb-4 flex flex-wrap items-center justify-between gap-3"><h2 class="text-xl font-extrabold text-pri">${S?'Processos':'Meus processos'}${st.cli?' · '+esc(cli(st.cli).nome):''}</h2><div class="flex gap-2">${st.cli?`<button class="b2" onclick="ir('processos')">Limpar filtro</button>`:''}<input class="in !w-60" placeholder="Buscar…" value="${esc(st.q||'')}" oninput="st.q=this.value;render();const i=document.querySelector('#view input');i.focus();i.setSelectionRange(99,99)"></div></div>
+  ${S?`<details class="card mb-5"><summary class="cursor-pointer font-bold text-sec">+ Cadastrar novo processo</summary><form onsubmit="novoProc(event)" class="mt-4 grid gap-3 sm:grid-cols-2">
+  <div><label class="lbl">Cliente</label><select name="clienteId" class="in" required>${DB.clientes.map(c=>`<option value="${c.id}" ${c.id===st.cli?'selected':''}>${esc(c.nome)}</option>`).join('')}</select></div><div><label class="lbl">Nº do processo</label><input name="numero" class="in" required></div>
+  <div><label class="lbl">Área</label><input name="area" class="in" placeholder="Cível, Trabalhista…" required></div><div><label class="lbl">Vara / Tribunal</label><input name="vara" class="in" required></div>
+  <div><label class="lbl">Advogado responsável</label><select name="advId" class="in">${advs.map(a=>`<option value="${a.id}" ${a.id===ME.id?'selected':''}>${esc(a.nome)}</option>`).join('')}</select></div><div><label class="lbl">Status</label><select name="status" class="in">${STAT.map(s=>`<option>${s}</option>`).join('')}</select></div>
+  <div class="sm:col-span-2"><label class="lbl">Objeto da ação</label><textarea name="objeto" rows="2" class="in" required></textarea></div><div class="sm:col-span-2"><button class="bp">Cadastrar processo</button></div></form></details>`:''}
+  <div class="grid gap-4 md:grid-cols-2">${L.map(p=>{const m=DB.movs.filter(x=>x.procId===p.id&&(S||x.vis)).sort((a,b)=>b.data.localeCompare(a.data))[0],a=DB.agenda.filter(x=>x.procId===p.id&&x.data>=today()).sort((a,b)=>a.data.localeCompare(b.data))[0];
+  return`<article class="card cursor-pointer transition hover:shadow-md" onclick="ir('det',{proc:'${p.id}',tab:'and'})"><div class="flex items-start justify-between gap-2"><div><div class="text-xs font-semibold text-slate-500">${esc(p.area)} · ${esc(p.vara)}</div><div class="font-bold text-pri">${esc(p.numero)}</div>${S?`<div class="text-sm">${esc(cli(p.clienteId).nome)}</div>`:''}</div>${bd(p.status)}</div><p class="mt-2 text-sm text-slate-600">${esc(p.objeto)}</p>
+  <div class="mt-3 space-y-1 border-t pt-2 text-xs text-slate-500">${m?`<div>🕒 Última: <b>${esc(m.titulo)}</b> (${fd(m.data)})</div>`:''}${a?`<div>📅 Próximo: <b>${esc(a.tipo)}</b> em ${fd(a.data)}</div>`:''}</div></article>`}).join('')||'<p class="text-slate-400">Nenhum processo disponível.</p>'}</div>`}
+function novoProc(e){e.preventDefault();const f=Object.fromEntries(new FormData(e.target));DB.processos.push({id:'p'+uid(),...f});save();render();toast('Processo cadastrado.')}
+
+function vDet(){const p=proc(st.proc);if(!p||!procsVis().includes(p))return vProcessos();const S=staff(),T=[['and','Andamento'],['doc','Documentos'],['ag','Agenda']];
+  return`<button class="mb-3 text-sm font-semibold text-sec cursor-pointer" onclick="ir('processos')">← Voltar</button>
+  <section class="card mb-5"><div class="flex flex-wrap items-start justify-between gap-3"><div><div class="text-xs font-semibold text-slate-500">${esc(p.area)} · ${esc(p.vara)}</div><h2 class="text-xl font-extrabold text-pri">${esc(p.numero)}</h2><p class="text-sm">${S?esc(cli(p.clienteId).nome)+' · ':''}Adv.: ${esc(DB.users.find(u=>u.id===p.advId)?.nome||'—')}</p></div>
+  ${S?`<select class="in !w-52" onchange="setStatus('${p.id}',this.value)">${STAT.map(s=>`<option ${s===p.status?'selected':''}>${s}</option>`).join('')}</select>`:bd(p.status)}</div><p class="mt-3 text-sm text-slate-600">${esc(p.objeto)}</p></section>
+  <div class="mb-4 flex border-b">${T.map(([k,v])=>`<button class="tab2 ${st.tab===k?'on':''}" onclick="st.tab='${k}';render()">${v}</button>`).join('')}</div>${({and:tAnd,doc:tDoc,ag:tAg})[st.tab](p,S)}`}
+function setStatus(id,s){proc(id).status=s;save();notify(id,'Status do processo atualizado: '+s);save();render()}
+function tAnd(p,S){const L=DB.movs.filter(m=>m.procId===p.id&&(S||m.vis)).sort((a,b)=>b.data.localeCompare(a.data));
+  return(S?`<details class="card mb-5"><summary class="cursor-pointer font-bold text-sec">+ Publicar atualização</summary><form onsubmit="novaMov(event)" class="mt-4 grid gap-3 sm:grid-cols-3"><div><label class="lbl">Tipo</label><select name="tipo" class="in">${MOV.map(t=>`<option>${t}</option>`).join('')}</select></div><div><label class="lbl">Data</label><input name="data" type="date" value="${today()}" class="in" required></div><div><label class="lbl">Título</label><input name="titulo" class="in" required></div>
+  <div class="sm:col-span-3"><label class="lbl">Descrição / orientações / próximos passos</label><textarea name="texto" rows="3" class="in" required></textarea></div><label class="flex items-center gap-2 text-sm sm:col-span-2"><input type="checkbox" name="vis" checked> Visível ao cliente (gera notificação)</label><div class="text-right"><button class="bp">Publicar</button></div></form></details>`:'')+
+  `<ol class="relative ml-3 border-l-2 border-sec/40">${L.map(m=>`<li class="mb-5 ml-5"><span class="absolute -left-[9px] mt-1.5 h-4 w-4 rounded-full border-2 border-white bg-sec"></span><div class="card !p-4"><div class="flex flex-wrap items-center gap-2 text-xs"><span class="bd bg-sky-100 text-sky-800">${esc(m.tipo)}</span><span class="text-slate-500">${fd(m.data)}</span>${m.vis?'':'<span class="bd bg-slate-200 text-slate-700">Interno</span>'}</div><h4 class="mt-1 font-bold text-pri">${esc(m.titulo)}</h4><p class="text-sm text-slate-600">${esc(m.texto)}</p></div></li>`).join('')||'<li class="ml-5 text-sm text-slate-400">Sem movimentações.</li>'}</ol>`}
+function novaMov(e){e.preventDefault();const f=Object.fromEntries(new FormData(e.target));f.vis=!!f.vis;DB.movs.push({id:uid(),procId:st.proc,...f});if(f.vis)notify(st.proc,'Nova movimentação: '+f.titulo);save();render();toast('Atualização publicada.')}
+function tDoc(p,S){const L=DB.docs.filter(d=>d.procId===p.id&&(S||d.vis)).sort((a,b)=>b.data.localeCompare(a.data));
+  return(S?`<details class="card mb-5"><summary class="cursor-pointer font-bold text-sec">+ Anexar documento</summary><form onsubmit="novoDoc(event)" class="mt-4 grid gap-3 sm:grid-cols-3"><div><label class="lbl">Categoria</label><select name="cat" class="in">${CATS.map(c=>`<option>${c}</option>`).join('')}</select></div><div><label class="lbl">Nome</label><input name="nome" class="in" required></div><div><label class="lbl">Arquivo (até 2 MB)</label><input name="arq" type="file" class="in" required></div>
+  <label class="flex items-center gap-2 text-sm sm:col-span-2"><input type="checkbox" name="vis" checked> Disponível ao cliente</label><div class="text-right"><button class="bp">Anexar</button></div></form></details>`:'')+
+  `<div class="card overflow-x-auto !p-0"><table class="w-full min-w-[520px]"><thead><tr><th>Documento</th><th>Categoria</th><th>Data</th><th></th></tr></thead><tbody>${L.map(d=>`<tr><td class="font-semibold">${esc(d.nome)}${d.vis?'':' <span class="bd bg-slate-200 text-slate-700">Interno</span>'}</td><td>${esc(d.cat)}</td><td>${fd(d.data)}</td><td><a class="font-semibold text-sec" href="${d.url}" download="${esc(d.arq)}">Baixar</a></td></tr>`).join('')||'<tr><td colspan="4" class="text-slate-400">Nenhum documento.</td></tr>'}</tbody></table></div>`}
+function novoDoc(e){e.preventDefault();const fm=new FormData(e.target),file=fm.get('arq');if(file.size>2e6)return toast('Arquivo acima de 2 MB.');const r=new FileReader();
+  r.onload=()=>{const vis=!!fm.get('vis');DB.docs.push({id:uid(),procId:st.proc,cat:fm.get('cat'),nome:fm.get('nome'),arq:file.name,url:r.result,data:today(),vis});if(vis)notify(st.proc,'Novo documento disponível: '+fm.get('nome'));save();render();toast('Documento anexado.')};r.readAsDataURL(file)}
+function tAg(p,S){const L=DB.agenda.filter(a=>a.procId===p.id).sort((a,b)=>a.data.localeCompare(b.data));
+  return(S?`<details class="card mb-5"><summary class="cursor-pointer font-bold text-sec">+ Agendar compromisso</summary><form onsubmit="novoAg(event)" class="mt-4 grid gap-3 sm:grid-cols-4"><div><label class="lbl">Tipo</label><select name="tipo" class="in">${AGT.map(t=>`<option>${t}</option>`).join('')}</select></div><div><label class="lbl">Data</label><input name="data" type="date" class="in" required></div><div><label class="lbl">Hora</label><input name="hora" type="time" class="in" required></div><div><label class="lbl">Título</label><input name="titulo" class="in" required></div>
+  <div class="sm:col-span-3"><label class="lbl">Local / link</label><input name="local" class="in"></div><div class="text-right sm:pt-5"><button class="bp">Agendar</button></div></form></details>`:'')+`<div class="card"><ul class="divide-y">${L.map(agItem).join('')||'<li class="text-sm text-slate-400">Nada agendado.</li>'}</ul></div>`}
+function novoAg(e){e.preventDefault();const f=Object.fromEntries(new FormData(e.target));DB.agenda.push({id:uid(),procId:st.proc,...f});notify(st.proc,`${f.tipo} agendado(a) para ${fd(f.data)}: ${f.titulo}`);save();render();toast('Compromisso agendado.')}
+
+function vAgenda(){const I=ids(),L=DB.agenda.filter(a=>I.has(a.procId)).sort((a,b)=>(a.data+a.hora).localeCompare(b.data+b.hora)),g={};L.forEach(a=>{const k=new Date(a.data+'T12:00:00').toLocaleDateString('pt-BR',{month:'long',year:'numeric'});(g[k]=g[k]||[]).push(a)});
+  return`<h2 class="mb-4 text-xl font-extrabold text-pri">Agenda processual</h2><div class="space-y-4">${Object.entries(g).map(([k,v])=>`<section class="card"><h3 class="mb-1 font-bold capitalize text-pri">${k}</h3><ul class="divide-y">${v.map(agItem).join('')}</ul></section>`).join('')||'<p class="text-slate-400">Nenhum compromisso.</p>'}</div>`}
+function vNotif(){const L=DB.notifs.filter(n=>n.userId===ME.id).sort((a,b)=>b.data.localeCompare(a.data));DB.notifs.forEach(n=>{if(n.userId===ME.id)n.lida=true});save();setTimeout(()=>{$('bell-n').classList.add('hidden')},0);
+  return`<h2 class="mb-4 text-xl font-extrabold text-pri">Notificações</h2><div class="space-y-2">${L.map(n=>`<div class="card cursor-pointer !p-4" onclick="ir('det',{proc:'${n.procId}',tab:'and'})">🔔 <b>${esc(n.texto)}</b><div class="text-xs text-slate-500">${new Date(n.data).toLocaleString('pt-BR')}</div></div>`).join('')||'<p class="text-slate-400">Sem notificações.</p>'}</div>`}
+function vAcessos(){const R={admin:'Administrador',advogado:'Advogado'};
+  return`<h2 class="mb-4 text-xl font-extrabold text-pri">Controle de acessos</h2><details class="card mb-5"><summary class="cursor-pointer font-bold text-sec">+ Criar acesso para advogado / administrador</summary><form onsubmit="novoUser(event)" class="mt-4 grid gap-3 sm:grid-cols-4"><div><label class="lbl">Nome</label><input name="nome" class="in" required></div><div><label class="lbl">Login</label><input name="login" class="in" required></div><div><label class="lbl">Senha (mín. 8)</label><input name="senha" type="password" minlength="8" class="in" required></div><div><label class="lbl">Perfil</label><select name="tipo" class="in"><option value="advogado">Advogado</option><option value="admin">Administrador</option></select></div><div class="sm:col-span-4"><button class="bp">Criar acesso</button></div></form></details>
+  <div class="card overflow-x-auto !p-0"><table class="w-full min-w-[520px]"><thead><tr><th>Nome</th><th>Login</th><th>Permissão</th><th></th></tr></thead><tbody>${DB.users.map(u=>`<tr><td>${esc(u.nome)}</td><td>${esc(u.login)}</td><td>${R[u.tipo]||'Cliente'}</td><td>${u.id!==ME.id?`<button class="text-red-600 cursor-pointer" onclick="delUser('${u.id}')">Revogar</button>`:''}</td></tr>`).join('')}</tbody></table></div>`}
+async function novoUser(e){e.preventDefault();const f=Object.fromEntries(new FormData(e.target)),l=f.login.trim().toLowerCase();if(DB.users.some(u=>u.login===l))return toast('Este login já existe.');DB.users.push({id:uid(),login:l,hash:await H(f.senha),nome:f.nome,tipo:f.tipo});save();render();toast('Acesso criado.')}
+function delUser(id){if(confirm('Revogar este acesso?')){DB.users=DB.users.filter(u=>u.id!==id);save();render()}}
+
+/* ---------- exportação ---------- */
+async function exportar(){const S=staff(),P=procsVis(),I=new Set(P.map(p=>p.id));
+  const out=S&&adm()?{clientes:DB.clientes,processos:DB.processos,movimentacoes:DB.movs,documentos:DB.docs,agenda:DB.agenda,usuarios:DB.users.map(({hash,...u})=>u)}
+   :{clientes:DB.clientes.filter(c=>S||c.id===ME.clienteId),processos:P,movimentacoes:DB.movs.filter(m=>I.has(m.procId)&&(S||m.vis)),documentos:DB.docs.filter(d=>I.has(d.procId)&&(S||d.vis)),agenda:DB.agenda.filter(a=>I.has(a.procId))};
+  const text=JSON.stringify({sistema:'GTech Jurídico',exportadoEm:new Date().toISOString(),exportadoPor:ME.nome,...out},null,2),name=`gtech_juridico_${today()}.json`;
+  if(window.showSaveFilePicker){try{const h=await showSaveFilePicker({suggestedName:name,types:[{description:'JSON',accept:{'application/json':['.json']}}]});const w=await h.createWritable();await w.write(text);await w.close();return toast('Dados salvos no computador.')}catch(e){if(e.name==='AbortError')return}}
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();a.remove();toast('Download iniciado: '+name)}
+init();
 </script>
 </body>
 </html>
