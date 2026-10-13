@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>JurisFlow</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f4f6f9;--card:#fff;--tx:#14284b;--mut:#64708a;--bd:#dde3ed;--pri:#14284b;--pt:#fff;--ok:#1f7a4d;--okb:#dff3e8;--wn:#9a6700;--wnb:#fff1cc;--rd:#b42318;--rdb:#fde4e1;--bl:#1d4f91;--blb:#e1ecfa}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1526;--card:#15213a;--tx:#e8edf7;--mut:#93a0ba;--bd:#26365a;--pri:#6c9bf0;--pt:#0d1526;--okb:#12382a;--ok:#6fd1a0;--wnb:#3b2f0d;--wn:#f0c866;--rdb:#41181a;--rd:#ff9b93;--blb:#16315a;--bl:#9cc0f5}}
+:root[data-theme="dark"]{--bg:#0d1526;--card:#15213a;--tx:#e8edf7;--mut:#93a0ba;--bd:#26365a;--pri:#6c9bf0;--pt:#0d1526;--okb:#12382a;--ok:#6fd1a0;--wnb:#3b2f0d;--wn:#f0c866;--rdb:#41181a;--rd:#ff9b93;--blb:#16315a;--bl:#9cc0f5}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--pri);outline-offset:2px}
+.wrap{max-width:960px;margin:0 auto;padding:16px}
+.login{max-width:440px;margin:6vh auto 0}
+h1{font-size:26px;margin:0 0 4px;letter-spacing:-.02em}
+h2{font-size:18px;margin:0 0 12px}
+h3{font-size:15px;margin:0 0 6px}
+.mut{color:var(--mut)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:12px}
+.roles{display:grid;gap:8px;margin:18px 0}
+.role{display:flex;gap:12px;align-items:center;text-align:left;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px;cursor:pointer;width:100%}
+.role[aria-pressed=true]{border-color:var(--pri);box-shadow:0 0 0 2px var(--pri) inset}
+.role b{display:block}.role small{color:var(--mut)}
+.ic{font-size:22px;width:38px;height:38px;display:grid;place-items:center;background:var(--bg);border-radius:10px;flex:none}
+label{display:block;font-weight:500;margin:10px 0 4px}
+input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--card)}
+.btn{background:var(--pri);color:var(--pt);border:0;border-radius:8px;padding:10px 16px;font-weight:600;cursor:pointer}
+.btn.sec{background:transparent;color:var(--tx);border:1px solid var(--bd)}
+.btn.sm{padding:6px 10px;font-size:13px}
+.full{width:100%;margin-top:14px}
+.err{background:var(--rdb);color:var(--rd);padding:10px 12px;border-radius:8px;margin-top:12px}
+.msg{background:var(--okb);color:var(--ok);padding:10px 12px;border-radius:8px;margin-bottom:12px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:14px}
+.tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto}
+.tab{background:transparent;border:1px solid var(--bd);border-radius:999px;padding:6px 14px;cursor:pointer;white-space:nowrap}
+.tab[aria-selected=true]{background:var(--pri);color:var(--pt);border-color:var(--pri)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:12px}
+.stat b{font-size:24px;display:block}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:520px}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--bd);vertical-align:middle}
+th{font-weight:500;color:var(--mut);font-size:13px}
+.pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600}
+.s-Ativo{background:var(--okb);color:var(--ok)}.s-Suspenso{background:var(--wnb);color:var(--wn)}.s-Arquivado{background:var(--bg);color:var(--mut)}.s-Concluso{background:var(--blb);color:var(--bl)}.s-Recurso{background:var(--rdb);color:var(--rd)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.grid2{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.tl{border-left:2px solid var(--bd);margin:8px 0 0 6px;padding-left:16px}
+.ev{position:relative;margin-bottom:16px}
+.ev:before{content:"";position:absolute;left:-23px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--pri)}
+.ev.int:before{background:var(--wn)}
+.link{background:none;border:0;padding:0;color:var(--pri);cursor:pointer;font-weight:600;text-align:left}
+.sw{display:flex;align-items:center;gap:8px;margin:6px 0;font-weight:400}
+.sw input{width:auto}
+code{background:var(--bg);padding:2px 6px;border-radius:6px}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const PERF={sistema:{n:'Administrador do sistema',d:'Programador: cria usuários e define acessos e permissões gerais',i:'🛠️'},
+juridico:{n:'Administrador jurídico',d:'Escritório: gerencia clientes e quem vê cada processo',i:'⚖️'},
+cliente:{n:'Cliente',d:'Acompanhe seus processos com transparência',i:'👤'}};
+const PERMS={ver_processos:'Ver processos',editar_processos:'Criar e editar processos',gerir_clientes:'Gerenciar clientes',gerir_usuarios:'Gerenciar usuários',ver_logs:'Ver logs de acesso'};
+const STAT={Ativo:['Ativo','Seu processo está em andamento normal.'],Suspenso:['Suspenso','O andamento está temporariamente parado.'],Arquivado:['Arquivado','O processo foi encerrado e guardado.'],Concluso:['Concluso','Aguardando decisão do juiz.'],Recurso:['Em recurso','Foi pedida nova análise a um tribunal superior.']};
+let D={
+users:[
+{id:1,nome:'Dev Admin',email:'sistema@jurisflow.com',senha:'dev123',perfil:'sistema',ativo:true},
+{id:2,nome:'Dra. Helena Prado',email:'juridico@jurisflow.com',senha:'adv123',perfil:'juridico',ativo:true},
+{id:3,nome:'Maria Souza',email:'cliente@jurisflow.com',senha:'cli123',perfil:'cliente',ativo:true},
+{id:4,nome:'João Ribeiro',email:'joao@jurisflow.com',senha:'cli123',perfil:'cliente',ativo:true}],
+perms:{sistema:{ver_processos:1,editar_processos:1,gerir_clientes:1,gerir_usuarios:1,ver_logs:1},
+juridico:{ver_processos:1,editar_processos:1,gerir_clientes:1,gerir_usuarios:0,ver_logs:0},
+cliente:{ver_processos:1,editar_processos:0,gerir_clientes:0,gerir_usuarios:0,ver_logs:0}},
+procs:[
+{id:1,cnj:'0001234-56.2025.8.26.0100',titulo:'Ação de indenização por danos materiais',area:'Cível',status:'Ativo',cli:[3],vis:{3:true},
+movs:[{d:'2026-09-28',t:'Audiência de conciliação marcada',x:'Audiência marcada para 20/10/2026 às 14h, no fórum central.',pub:true},
+{d:'2026-09-15',t:'Estratégia para a audiência',x:'Avaliar proposta de acordo até R$ 18 mil.',pub:false},
+{d:'2026-08-02',t:'Petição inicial protocolada',x:'A petição foi enviada ao tribunal e distribuída.',pub:true}]},
+{id:2,cnj:'0004567-12.2024.5.02.0010',titulo:'Reclamação trabalhista',area:'Trabalhista',status:'Concluso',cli:[3],vis:{3:false},
+movs:[{d:'2026-09-30',t:'Concluso para sentença',x:'Autos enviados ao juiz para decisão.',pub:true}]},
+{id:3,cnj:'0007890-33.2025.8.26.0001',titulo:'Revisão de contrato de aluguel',area:'Cível',status:'Suspenso',cli:[4],vis:{4:true},
+movs:[{d:'2026-09-10',t:'Processo suspenso por acordo',x:'As partes pediram pausa para negociar.',pub:true}]}],
+logs:[]};
+try{const s=localStorage.getItem('jf');if(s)D=JSON.parse(s)}catch(e){}
+function save(){try{localStorage.setItem('jf',JSON.stringify(D))}catch(e){}}
+let S=null,role='cliente',tab='',sel=null,note='',err='';
+const can=p=>S&&D.perms[S.perfil][p];
+function log(a){D.logs.unshift({t:new Date().toLocaleString('pt-BR'),u:S?S.nome:'—',a});D.logs=D.logs.slice(0,40);save()}
+const tmp=()=>Math.random().toString(36).slice(2,6)+Math.random().toString(36).slice(2,6).toUpperCase()+'#7';
+const uname=id=>(D.users.find(u=>u.id==id)||{}).nome||'—';
+const fd=d=>d.split('-').reverse().join('/');
+
+function doLogin(){
+ const e=$('#em').value.trim().toLowerCase(),p=$('#pw').value;
+ const u=D.users.find(x=>x.email===e&&x.senha===p&&x.perfil===role);
+ if(!u){err='E-mail ou senha incorretos para este tipo de acesso.';return render()}
+ if(!u.ativo){err='Esta conta está desativada. Fale com o administrador.';return render()}
+ S=u;err='';sel=null;note='';tab={sistema:'usuarios',juridico:'processos',cliente:'processos'}[u.perfil];log('Login realizado ('+PERF[u.perfil].n+')');render()
+}
+function logout(){log('Logout');S=null;sel=null;note='';render()}
+function pick(r){role=r;err='';render()}
+function setTab(t){tab=t;sel=null;note='';render()}
+function open_(id){sel=id;log('Abriu o processo #'+id);render()}
+
+function loginView(){
+ return `<div class="login"><h1>JurisFlow</h1><p class="mut">Gestão e acompanhamento de processos jurídicos.</p>
+ <div class="roles" role="group" aria-label="Tipo de acesso">${Object.keys(PERF).map(k=>`<button class="role" aria-pressed="${k===role}" onclick="pick('${k}')"><span class="ic">${PERF[k].i}</span><span><b>${PERF[k].n}</b><small>${PERF[k].d}</small></span></button>`).join('')}</div>
+ <div class="card"><h2>Entrar como ${PERF[role].n.toLowerCase()}</h2>
+ <label for="em">E-mail</label><input id="em" type="email" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()">
+ <label for="pw">Senha</label><input id="pw" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+ ${err?`<div class="err" role="alert">${esc(err)}</div>`:''}
+ <button class="btn full" onclick="doLogin()">Entrar</button>
+ <p class="mut" style="font-size:13px;margin:12px 0 0">Conta de teste: <button class="link" onclick="demo()">preencher automaticamente</button></p></div>
+ <p class="mut" style="font-size:12px">Protótipo de demonstração: os dados ficam só neste navegador. Em produção, a autenticação roda no servidor com senhas em hash.</p></div>`;
+}
+function demo(){const m={sistema:['sistema@jurisflow.com','dev123'],juridico:['juridico@jurisflow.com','adv123'],cliente:['cliente@jurisflow.com','cli123']}[role];$('#em').value=m[0];$('#pw').value=m[1]}
+
+function shell(inner,tabs){
+ return `<div class="top"><div><h2 style="margin:0">JurisFlow</h2><span class="mut">${esc(S.nome)} · ${PERF[S.perfil].n}</span></div><button class="btn sec sm" onclick="logout()">Sair</button></div>
+ ${note?`<div class="msg" role="status">${note}</div>`:''}
+ ${tabs?`<div class="tabs" role="tablist">${tabs.map(([k,l])=>`<button class="tab" role="tab" aria-selected="${tab===k}" onclick="setTab('${k}')">${l}</button>`).join('')}</div>`:''}${inner}`;
+}
+
+/* ---------- Administrador do sistema ---------- */
+function sistemaView(){
+ let h='';
+ if(tab==='usuarios'){
+  h=`<div class="stats"><div class="card stat"><b>${D.users.length}</b>Usuários</div><div class="card stat"><b>${D.users.filter(u=>u.ativo).length}</b>Ativos</div><div class="card stat"><b>${D.users.filter(u=>u.perfil==='cliente').length}</b>Clientes</div></div>
+  <div class="card"><h2>Criar usuário</h2><div class="grid2">
+  <div><label for="nn">Nome</label><input id="nn"></div><div><label for="ne">E-mail</label><input id="ne" type="email"></div>
+  <div><label for="np">Tipo de acesso</label><select id="np">${Object.keys(PERF).map(k=>`<option value="${k}">${PERF[k].n}</option>`).join('')}</select></div></div>
+  <button class="btn" style="margin-top:12px" onclick="addUser()">Criar e gerar senha temporária</button></div>
+  <div class="card scroll"><h2>Usuários</h2><table><tr><th>Nome</th><th>Acesso</th><th>Status</th><th></th></tr>
+  ${D.users.map(u=>`<tr><td>${esc(u.nome)}<br><span class="mut" style="font-size:13px">${esc(u.email)}</span></td><td>${PERF[u.perfil].n}</td><td><span class="pill ${u.ativo?'s-Ativo':'s-Arquivado'}">${u.ativo?'Ativo':'Desativado'}</span></td>
+  <td>${u.id===S.id?'':`<button class="btn sec sm" onclick="togUser(${u.id})">${u.ativo?'Desativar':'Ativar'}</button> <button class="btn sec sm" onclick="resetPw(${u.id})">Nova senha</button>`}</td></tr>`).join('')}</table></div>`;
+ }else if(tab==='permissoes'){
+  h=`<div class="card"><h2>Permissões por tipo de acesso</h2><p class="mut">Mudanças valem imediatamente para todos os usuários do perfil.</p>
+  <div class="grid2">${['sistema','juridico','cliente'].map(r=>`<div><h3>${PERF[r].n}</h3>${Object.keys(PERMS).map(p=>`<label class="sw"><input type="checkbox" ${D.perms[r][p]?'checked':''} ${r==='sistema'&&p==='gerir_usuarios'?'disabled':''} onchange="setPerm('${r}','${p}',this.checked)">${PERMS[p]}</label>`).join('')}</div>`).join('')}</div></div>`;
+ }else{
+  h=`<div class="card scroll"><h2>Logs de acesso</h2>${D.logs.length?`<table><tr><th>Quando</th><th>Quem</th><th>Ação</th></tr>${D.logs.map(l=>`<tr><td>${esc(l.t)}</td><td>${esc(l.u)}</td><td>${esc(l.a)}</td></tr>`).join('')}</table>`:'<p class="mut">Nenhum acesso registrado ainda.</p>'}</div>`;
+ }
+ return shell(h,[['usuarios','Usuários'],['permissoes','Permissões'],['logs','Logs']]);
+}
+function mkUser(nome,email,perfil){
+ if(!nome||!email)return null;
+ if(D.users.some(u=>u.email===email.toLowerCase())){note='Já existe um usuário com este e-mail.';return null}
+ const senha=tmp(),u={id:Date.now(),nome,email:email.toLowerCase(),senha,perfil,ativo:true};D.users.push(u);save();return u;
+}
+function addUser(){const u=mkUser($('#nn').value.trim(),$('#ne').value.trim(),$('#np').value);
+ if(u){note=`Usuário criado. Senha temporária de ${esc(u.nome)}: <code>${esc(u.senha)}</code>`;log('Criou usuário '+u.nome)}else if(!note)note='Preencha nome e e-mail.';render()}
+function togUser(id){const u=D.users.find(x=>x.id===id);u.ativo=!u.ativo;log((u.ativo?'Ativou ':'Desativou ')+u.nome);save();render()}
+function resetPw(id){const u=D.users.find(x=>x.id===id);u.senha=tmp();save();note=`Nova senha de ${esc(u.nome)}: <code>${esc(u.senha)}</code>`;log('Redefiniu senha de '+u.nome);render()}
+function setPerm(r,p,v){D.perms[r][p]=v?1:0;log(`Permissão "${PERMS[p]}" ${v?'concedida a':'removida de'} ${PERF[r].n}`);save()}
+
+/* ---------- Detalhe do processo (jurídico e cliente) ---------- */
+function detail(p,isCli){
+ const movs=p.movs.filter(m=>!isCli||m.pub).sort((a,b)=>b.d.localeCompare(a.d));
+ const st=STAT[p.status];
+ let h=`<button class="link" onclick="sel=null;render()">‹ Voltar</button>
+ <div class="card" style="margin-top:10px"><div class="row"><h2 style="margin:0">${esc(p.titulo)}</h2><span class="pill s-${p.status}">${st[0]}</span></div>
+ <p class="mut" style="margin:6px 0 0">${esc(p.area)} · Nº ${esc(p.cnj)}</p>${isCli?`<p style="margin:8px 0 0">${st[1]}</p>`:''}</div>`;
+ if(!isCli){
+  h+=`<div class="card"><h3>Quem pode ver este processo</h3>${p.cli.map(c=>`<label class="sw"><input type="checkbox" ${p.vis[c]?'checked':''} onchange="togVis(${p.id},${c},this.checked)">${esc(uname(c))} pode visualizar</label>`).join('')||'<span class="mut">Nenhum cliente vinculado.</span>'}</div>`;
+  if(can('editar_processos'))h+=`<div class="card"><h3>Nova movimentação</h3><label for="mt">Título</label><input id="mt"><label for="mx">Descrição</label><textarea id="mx" rows="3"></textarea>
+  <label class="sw"><input type="checkbox" id="mp" checked>Visível ao cliente</label><button class="btn sm" onclick="addMov(${p.id})">Adicionar à linha do tempo</button></div>`;
+ }
+ h+=`<div class="card"><h3>Linha do tempo</h3><div class="tl">${movs.map(m=>`<div class="ev ${m.pub?'':'int'}"><b>${esc(m.t)}</b> ${!isCli&&!m.pub?'<span class="pill s-Suspenso">Interno</span>':''}<div class="mut" style="font-size:13px">${fd(m.d)}</div><div>${esc(m.x)}</div></div>`).join('')||'<span class="mut">Sem movimentações.</span>'}</div></div>`;
+ return h;
+}
+function togVis(pid,cid,v){const p=D.procs.find(x=>x.id===pid);p.vis[cid]=v;log(`${v?'Liberou':'Bloqueou'} o processo #${pid} para ${uname(cid)}`);save()}
+function addMov(pid){const t=$('#mt').value.trim();if(!t){note='Informe um título.';return render()}
+ D.procs.find(x=>x.id===pid).movs.push({d:new Date().toISOString().slice(0,10),t,x:$('#mx').value.trim(),pub:$('#mp').checked});log('Nova movimentação no processo #'+pid);save();note='Movimentação adicionada.';render()}
+
+/* ---------- Administrador jurídico ---------- */
+function juridicoView(){
+ let h='';const tabs=[['processos','Processos']];if(can('gerir_clientes'))tabs.push(['clientes','Clientes']);
+ if(tab==='clientes'&&can('gerir_clientes')){
+  const cl=D.users.filter(u=>u.perfil==='cliente');
+  h=`<div class="card"><h2>Novo cliente</h2><div class="grid2"><div><label for="nn">Nome</label><input id="nn"></div><div><label for="ne">E-mail</label><input id="ne" type="email"></div></div>
+  <button class="btn" style="margin-top:12px" onclick="addCli()">Cadastrar e gerar acesso</button></div>
+  <div class="card scroll"><h2>Clientes</h2><table><tr><th>Cliente</th><th>Processos liberados</th><th></th></tr>${cl.map(c=>`<tr><td>${esc(c.nome)}<br><span class="mut" style="font-size:13px">${esc(c.email)}</span></td><td>${D.procs.filter(p=>p.cli.includes(c.id)&&p.vis[c.id]).length} de ${D.procs.filter(p=>p.cli.includes(c.id)).length}</td>
+  <td><button class="btn sec sm" onclick="togUser(${c.id})">${c.ativo?'Desativar':'Ativar'}</button></td></tr>`).join('')}</table></div>`;
+ }else if(sel){h=detail(D.procs.find(p=>p.id===sel),false)}
+ else{
+  const at=D.procs.filter(p=>p.status==='Ativo').length;
+  h=`<div class="stats"><div class="card stat"><b>${D.procs.length}</b>Processos</div><div class="card stat"><b>${at}</b>Ativos</div><div class="card stat"><b>${D.users.filter(u=>u.perfil==='cliente').length}</b>Clientes</div></div>
+  ${can('editar_processos')?`<div class="card"><h2>Novo processo</h2><div class="grid2"><div><label for="pt">Título</label><input id="pt"></div><div><label for="pc">Número CNJ</label><input id="pc" placeholder="0000000-00.0000.0.00.0000"></div>
+  <div><label for="pa">Área</label><select id="pa"><option>Cível</option><option>Trabalhista</option><option>Criminal</option><option>Família</option></select></div>
+  <div><label for="pl">Cliente</label><select id="pl">${D.users.filter(u=>u.perfil==='cliente').map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`).join('')}</select></div></div>
+  <button class="btn" style="margin-top:12px" onclick="addProc()">Criar processo</button></div>`:''}
+  <div class="card scroll"><h2>Processos</h2><table><tr><th>Processo</th><th>Cliente</th><th>Status</th></tr>${D.procs.map(p=>`<tr><td><button class="link" onclick="open_(${p.id})">${esc(p.titulo)}</button><br><span class="mut" style="font-size:13px">${esc(p.cnj)}</span></td><td>${p.cli.map(uname).map(esc).join(', ')}</td><td><span class="pill s-${p.status}">${STAT[p.status][0]}</span></td></tr>`).join('')}</table></div>`;
+ }
+ return shell(h,tabs);
+}
+function addCli(){const u=mkUser($('#nn').value.trim(),$('#ne').value.trim(),'cliente');
+ if(u){note=`Cliente cadastrado. Senha temporária de ${esc(u.nome)}: <code>${esc(u.senha)}</code>`;log('Cadastrou cliente '+u.nome)}else if(!note)note='Preencha nome e e-mail.';render()}
+function addProc(){const t=$('#pt').value.trim(),c=$('#pc').value.trim(),cl=+$('#pl').value;
+ if(!t||!c||!cl){note='Informe título, número CNJ e cliente.';return render()}
+ D.procs.push({id:Date.now(),cnj:c,titulo:t,area:$('#pa').value,status:'Ativo',cli:[cl],vis:{[cl]:false},movs:[]});log('Criou processo '+t);save();note='Processo criado. Libere a visualização ao cliente dentro do processo.';render()}
+
+/* ---------- Cliente ---------- */
+function clienteView(){
+ const mine=D.procs.filter(p=>p.cli.includes(S.id)&&p.vis[S.id]);
+ let h;
+ if(sel){const p=mine.find(x=>x.id===sel);h=p?detail(p,true):'<p>Processo indisponível.</p>'}
+ else h=`<div class="card"><h2>Meus processos</h2>${mine.length?mine.map(p=>`<div class="row" style="padding:10px 0;border-bottom:1px solid var(--bd)"><div><button class="link" onclick="open_(${p.id})">${esc(p.titulo)}</button><div class="mut" style="font-size:13px">${STAT[p.status][1]}</div></div><span class="pill s-${p.status}">${STAT[p.status][0]}</span></div>`).join(''):'<p class="mut">Seu advogado ainda não liberou nenhum processo para visualização.</p>'}</div>`;
+ return shell(h,null);
+}
+
+function render(){
+ let h=!S?loginView():S.perfil==='sistema'?sistemaView():S.perfil==='juridico'?juridicoView():clienteView();
+ $('#app').innerHTML=h;note='';
+}
+render();
+</script>
+</body>
+</html>
